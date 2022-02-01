@@ -16,12 +16,12 @@
     </listener>
 
     <servlet>
-        <servlet-name>pizzaServlet</servlet-name>
-        <servlet-class>servlets.PizzaServlet</servlet-class>
+        <servlet-name>cardServlet</servlet-name>
+        <servlet-class>servlets.CardServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>pizzaServlet</servlet-name>
-        <url-pattern>/pizza/*</url-pattern>
+        <servlet-name>cardServlet</servlet-name>
+        <url-pattern>/card/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
