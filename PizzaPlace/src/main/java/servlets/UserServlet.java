@@ -37,8 +37,21 @@ public class UserServlet extends HttpServlet {
     // This is a create method - ex. user is registering by sending data to the server
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //super.doPost(req, resp);
-        System.out.println("get response successful?");
+        String firstName = req.getParameter("first-name");
+        String lastName = req.getParameter("last-name");
+        String email = req.getParameter("email");
+
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+
+        // Now you have a user object with data
+
+        System.out.println("First Name: " + firstName);
+        System.out.println("Last Name: " + lastName);
+        System.out.println("Email: " + email);
+
         resp.setStatus(200);
         resp.getWriter().print("Pong!");
     }
@@ -46,7 +59,23 @@ public class UserServlet extends HttpServlet {
     // This is an update method - ex. user is modifying their own information
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //super.doPut(req, resp);
+        String firstName = req.getParameter("first-name");
+        String lastName = req.getParameter("last-name");
+        String email = req.getParameter("email");
+
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+
+        // Now you have a user object with data
+
+        System.out.println("First Name: " + firstName);
+        System.out.println("Last Name: " + lastName);
+        System.out.println("Email: " + email);
+
+        resp.setStatus(200);
+        resp.getWriter().print("Put request get!");
     }
 
     // This is a delete method - ex. user wants to delete their account

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html lang=en>
+	<head>
+		<title>Project 1</title>
+	</head>
+
+	<body>
+		<header>Pizza Place</header>
+
+		<main>
+
+			<form action="http://localhost:8080/PizzaPlace/user" method="POST">
+				<label for="first-name">First name: </label>
+				<input type="text" name="first-name" id="first-name" required />
+				<label for="last-name">Last name: </label>
+				<input type="text" name="last-name" id="last-name" required />
+				<label for="email" required>Your e-mail: </label>
+				<input type="email" name="email" id="email" />
+				<label for="message" id="message-box">Message: </label>
+				<textarea name="message" id="message"></textarea>
+				<input type="submit" value="Send" />
+
+			</form>
+		</main>
+	</body>
+
+</html>
