@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.InvalidContentTypeException;
 import exceptions.InvalidInputException;
 import objects.Card;
 import utils.MockingORM;
@@ -33,11 +34,14 @@ public class CardServlet extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         // convert object to json
         String json = mapper.writeValueAsString(card);
-        System.out.println(card);
+        // Set response header and return to sender
         resp.setStatus(200);
         resp.getWriter().print(json);
     }
 
+    // TODO: (stretch goal) if requesting a card deletion, the request will have to come through as a post
+    // if sent via form because of html restrictions.  So either catch and forward to doDelete() or setup
+    // a different endpoint, or something
     // post request: ex. user is submitting a card
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,14 +51,10 @@ public class CardServlet extends HttpServlet {
         // Note: the Content-Type must be sent on the client side (ex. postman) to application/json or text/plain
         // the code as written will return a server error if no content type is defined
         if (contentType.equals("application/json")) {
-            System.out.println("Json detected!");
             card = mapper.readValue(req.getInputStream(), Card.class);
         }
         else {
-            // maybe form data? Not sure if this section is needed
-            // form data type: application/x-www-form-urlencoded
-            System.out.println("Something other than json was received.");
-            System.out.println(req.getHeader("Content-Type"));
+            // This is only used if the user submits their information in a form (ex. website).
             if (contentType.equals("application/x-www-form-urlencoded")) {
                 try {
                     String question = req.getParameter("question");
@@ -71,20 +71,17 @@ public class CardServlet extends HttpServlet {
 
                     card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
                 }
-                catch (NumberFormatException e) {
-                    System.out.println("An invalid number was submitted");
-                    e.printStackTrace();
-                }
                 catch (Exception e) {
                     System.out.println("Some error occurred");
                     e.printStackTrace();
+                    throw new InvalidInputException("Some invalid input was received.");
                 }
             }
             else {
-                System.out.println("Something else received!");
+                System.out.println("Some unknown format was received!");
                 System.out.println(contentType);
-                // this is really some error case
-                //card = new Card();
+                // this is really some error case - I'm not really sure how to handle this one
+                throw new InvalidContentTypeException("Unsupported content type received.  Please resubmit using application/json.");
             }
         }
         // return updated card to user

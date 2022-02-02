@@ -3,8 +3,8 @@ package utils;
 import exceptions.InvalidInputException;
 import objects.Card;
 
+// These are just stubs mocking an ORM call.  They don't actually do anything.
 public class MockingORM {
-    // This is just a stub mocking an orm call
     public static Card getCardFromCardNumber (Integer cardId) throws InvalidInputException {
         // Assume some erroneous number
         if (cardId < 0) {

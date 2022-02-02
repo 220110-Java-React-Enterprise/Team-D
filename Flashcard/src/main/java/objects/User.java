@@ -1,7 +1,10 @@
 package objects;
 
 // holds the user data
+
+//@Table(tableName="User")
 public class User {
+    //@Column(columnName="user_id", primaryKey=true)
     Integer userId;
     String firstName;
     String lastName;

@@ -38,9 +38,20 @@
         <location>/errorHandler</location>
     </error-page>
 
-    <!-- Any time a servlet throws a CustomException (which extends ServletException) it invokes the error handler servlet -->
+    <!-- Error 404 - ex. if you go to an incorrect location -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errorHandler</location>
+    </error-page>
+
+    <!-- This can be an error code or the exception type triggering this -->
     <error-page>
         <exception-type>exceptions.InvalidInputException</exception-type>
+        <location>/errorHandler</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>exceptions.InvalidContentTypeException</exception-type>
         <location>/errorHandler</location>
     </error-page>
 
@@ -48,7 +59,7 @@
      mapped to a servlet class-->
     <servlet>
         <servlet-name>errorHandler</servlet-name>
-        <servlet-class>servlets.ErrorHandlerServlet</servlet-class>
+        <servlet-class>servlets.ErrorServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>errorHandler</servlet-name>

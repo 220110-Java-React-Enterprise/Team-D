@@ -1,6 +1,8 @@
 package objects;
 
+//@Table(tableName="Card")
 public class Card {
+    //@Column(columnName=card_id, primaryKey=true)
     Integer cardId;
     String question;
     String answer1;
