@@ -5,15 +5,15 @@ import objects.Card;
 
 // These are just stubs mocking an ORM call.  They don't actually do anything.
 public class MockingORM {
-    public static Card getCardFromCardNumber (Integer cardId) throws InvalidInputException {
+    public static Card getCardFromCardNumber (Integer card_id) throws InvalidInputException {
         // Assume some erroneous number
-        if (cardId < 0) {
-            throw new InvalidInputException("Card " + cardId + " not found!");
+        if (card_id < 0) {
+            throw new InvalidInputException("Card " + card_id + " not found!");
         }
 
         // Below is mocking the successful retrieval of this card
         Card card = new Card();
-        card.setCardId(cardId);
+        card.setcard_id(card_id);
         card.setQuestion("What is an ORM?");
         card.setAnswer1("Ordinary Relational Map");
         card.setAnswer2("Object-Relational Mapping");
@@ -28,7 +28,7 @@ public class MockingORM {
     // Sends a new card to be persisted.
     // Returns the card but with the ID number populated.
     public static Card submitNewCard(Card card) {
-        card.setCardId(3);
+        card.setcard_id(3);
         System.out.println("Card has been submitted!");
         System.out.println("Mocking submit: " + card.getQuestion());
         return card;
@@ -42,8 +42,8 @@ public class MockingORM {
     }
 
     // "deletes" an existing card
-    public static Boolean deleteCard(Integer cardId) {
-        System.out.println("Yeah sure, card #" + cardId + " was deleted.");
+    public static Boolean deleteCard(Integer card_id) {
+        System.out.println("Yeah sure, card #" + card_id + " was deleted.");
         return true;
     }
 }

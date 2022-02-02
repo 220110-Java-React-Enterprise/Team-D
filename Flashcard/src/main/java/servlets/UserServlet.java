@@ -1,7 +1,4 @@
 package servlets;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import objects.User;
-
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,76 +8,35 @@ import java.io.IOException;
 
 public class UserServlet extends HttpServlet {
 
-    // This is a read method - ex. user wants to bring up their own information
+    // This is a read method - ex. retrieve this user's information
+    // Expects: user = # (=user_id)
+    // Returns: User object for that ID
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("get response successful?");
-        // query string is the info sent in the URL (ex. user = 1)
-        System.out.println(req.getQueryString());
 
-        // Test data
-        User user = new User();
-        user.setUserId(3);
-        user.setEmail("my.mail@mail.me");
-        user.setFirstName("Bilbo");
-        user.setLastName("Baggins");
-        String json = new ObjectMapper().writeValueAsString(user);
-
-        // Debug stuff
-        resp.setStatus(200);
-        resp.getWriter().print(json);
-
-        // Retrieve data from the orm for this user
-        //super.doGet(req, resp);
     }
 
-    // This is a create method - ex. user is registering by sending data to the server
+    // This is a write method - ex. add this user's information
+    // Expects all the data for a User object (except user_id)
+    // Returns: TODO (some sort of confirmation?)
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String firstName = req.getParameter("first-name");
-        String lastName = req.getParameter("last-name");
-        String email = req.getParameter("email");
 
-        User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-
-        // Now you have a user object with data
-
-        System.out.println("First Name: " + firstName);
-        System.out.println("Last Name: " + lastName);
-        System.out.println("Email: " + email);
-
-        resp.setStatus(200);
-        resp.getWriter().print("Pong!");
     }
 
-    // This is an update method - ex. user is modifying their own information
+    // This is an update method - ex. update this user's information
+    // Expects some or all of the data in a User object and requires the user_id (user = #)
+    // Returns: TODO (some sort of confirmation?)
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String firstName = req.getParameter("first-name");
-        String lastName = req.getParameter("last-name");
-        String email = req.getParameter("email");
 
-        User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-
-        // Now you have a user object with data
-
-        System.out.println("First Name: " + firstName);
-        System.out.println("Last Name: " + lastName);
-        System.out.println("Email: " + email);
-
-        resp.setStatus(200);
-        resp.getWriter().print("Put request get!");
     }
 
-    // This is a delete method - ex. user wants to delete their account
+    // This is a delete method - ex. delete this user's information
+    // Expects the user_id at least (user = #)
+    // Returns: TODO (some sort of confirmation?)
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //super.doDelete(req, resp);
+
     }
 }

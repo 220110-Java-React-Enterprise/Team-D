@@ -15,7 +15,10 @@ import utils.MockingORM;
 import utils.Parse;
 
 public class CardServlet extends HttpServlet {
-    // get request: ex. user wants to view a card
+
+    // This is a read method - ex. retrieve this card
+    // Expects: card = # (=card_id)
+    // Returns: Card object for that ID
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer cardNumber;
@@ -39,10 +42,13 @@ public class CardServlet extends HttpServlet {
         resp.getWriter().print(json);
     }
 
+
+    // This is a write method - ex. add this card
+    // Expects all the data for a Card object (except card_id)
+    // Returns: TODO (some sort of confirmation?)
     // TODO: (stretch goal) if requesting a card deletion, the request will have to come through as a post
     // if sent via form because of html restrictions.  So either catch and forward to doDelete() or setup
     // a different endpoint, or something
-    // post request: ex. user is submitting a card
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
@@ -51,7 +57,13 @@ public class CardServlet extends HttpServlet {
         // Note: the Content-Type must be sent on the client side (ex. postman) to application/json or text/plain
         // the code as written will return a server error if no content type is defined
         if (contentType.equals("application/json")) {
-            card = mapper.readValue(req.getInputStream(), Card.class);
+            try {
+                card = mapper.readValue(req.getInputStream(), Card.class);
+            }
+            catch (Exception e) {
+                //e.printStackTrace();
+                throw new InvalidInputException("Malformed JSON received.");
+            }
         }
         else {
             // This is only used if the user submits their information in a form (ex. website).
@@ -78,8 +90,7 @@ public class CardServlet extends HttpServlet {
                 }
             }
             else {
-                System.out.println("Some unknown format was received!");
-                System.out.println(contentType);
+                System.out.println("Content-Type " + contentType + " was received");
                 // this is really some error case - I'm not really sure how to handle this one
                 throw new InvalidContentTypeException("Unsupported content type received.  Please resubmit using application/json.");
             }
@@ -91,7 +102,9 @@ public class CardServlet extends HttpServlet {
         resp.getWriter().write(json);
     }
 
-    // put request: ex. user is editing a card
+    // This is an update method - ex. update this card's information
+    // Expects some or all of the data in a Card object and requires the card_id (card = #)
+    // Returns: TODO (some sort of confirmation?)
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
@@ -138,17 +151,28 @@ public class CardServlet extends HttpServlet {
         resp.getWriter().write(json);
     }
 
-    // delete request: ex. user is deleting a card
+    // This is a delete method - ex. delete this card
+    // Expects the card_id at least (card = #)
+    // Returns: TODO (some sort of confirmation?)
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Card card = new Card();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            card = mapper.readValue(req.getInputStream(), Card.class);
+            System.out.println("card_id: " + card.getcard_id());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Something went wrong in cardservlet.doDelete()");
+            System.out.println("card_id: " + card.getcard_id());
+            throw new InvalidInputException("Bad delete request");
+        }
         // maybe verify that the card # and creator are the same before deleting?
-        // Retrieve the card ID
-        //ObjectMapper mapper = new ObjectMapper();
-        String cardDeleteString = req.getParameter("card");
-        Integer cardNumber = Parse.getNumberFromString(cardDeleteString);
-        Boolean result = MockingORM.deleteCard(cardNumber);
+
+        Boolean result = MockingORM.deleteCard(card.getcard_id());
         resp.setStatus(200);
-        String json = "{\"result\": " + result + ", \"card\": " + cardNumber + "}";
+        String json = "{\"card\": " + card.getcard_id() + ", \"result\": " + result + "}";
         resp.getWriter().write(json);
     }
 }

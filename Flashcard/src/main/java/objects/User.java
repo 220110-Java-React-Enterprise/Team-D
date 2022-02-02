@@ -5,17 +5,17 @@ package objects;
 //@Table(tableName="User")
 public class User {
     //@Column(columnName="user_id", primaryKey=true)
-    Integer userId;
+    Integer user_id;
     String firstName;
     String lastName;
     String email;
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getuser_id() {
+        return user_id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setuser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
     public String getFirstName() {

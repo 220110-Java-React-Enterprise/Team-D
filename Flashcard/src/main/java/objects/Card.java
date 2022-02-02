@@ -3,7 +3,7 @@ package objects;
 //@Table(tableName="Card")
 public class Card {
     //@Column(columnName=card_id, primaryKey=true)
-    Integer cardId;
+    Integer card_id;
     String question;
     String answer1;
     String answer2;
@@ -14,12 +14,12 @@ public class Card {
 
     // Getters and setters
 
-    public Integer getCardId() {
-        return cardId;
+    public Integer getcard_id() {
+        return card_id;
     }
 
-    public void setCardId(Integer cardId) {
-        this.cardId = cardId;
+    public void setcard_id(Integer card_id) {
+        this.card_id = card_id;
     }
 
     public String getQuestion() {
