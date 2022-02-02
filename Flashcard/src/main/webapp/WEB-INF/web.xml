@@ -32,4 +32,26 @@
         <servlet-name>userServlet</servlet-name>
         <url-pattern>/user</url-pattern>
     </servlet-mapping>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errorHandler</location>
+    </error-page>
+
+    <!-- Any time a servlet throws a CustomException (which extends ServletException) it invokes the error handler servlet -->
+    <error-page>
+        <exception-type>exceptions.InvalidInputException</exception-type>
+        <location>/errorHandler</location>
+    </error-page>
+
+    <!-- Here is the mapping. Note it is exactly like the others, a location/path is mapped to a servlet name, which is
+     mapped to a servlet class-->
+    <servlet>
+        <servlet-name>errorHandler</servlet-name>
+        <servlet-class>servlets.ErrorHandlerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>errorHandler</servlet-name>
+        <url-pattern>/errorHandler</url-pattern>
+    </servlet-mapping>
 </web-app>

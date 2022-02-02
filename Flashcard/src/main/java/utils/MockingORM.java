@@ -1,10 +1,17 @@
 package utils;
 
+import exceptions.InvalidInputException;
 import objects.Card;
 
 public class MockingORM {
     // This is just a stub mocking an orm call
-    public static Card getCardFromCardNumber(Integer cardId) {
+    public static Card getCardFromCardNumber (Integer cardId) throws InvalidInputException {
+        // Assume some erroneous number
+        if (cardId < 0) {
+            throw new InvalidInputException("Card " + cardId + " not found!");
+        }
+
+        // Below is mocking the successful retrieval of this card
         Card card = new Card();
         card.setCardId(cardId);
         card.setQuestion("What is an ORM?");
@@ -22,12 +29,15 @@ public class MockingORM {
     // Returns the card but with the ID number populated.
     public static Card submitNewCard(Card card) {
         card.setCardId(3);
+        System.out.println("Card has been submitted!");
+        System.out.println("Mocking submit: " + card.getQuestion());
         return card;
     }
 
     // "updates" an existing card
     public static Card updateCard(Card card) {
         card.setQuestion("New question here");
+        System.out.println("Some card was updated.");
         return card;
     }
 

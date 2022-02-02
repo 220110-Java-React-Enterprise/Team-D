@@ -7,6 +7,7 @@ public class Card {
     String answer2;
     String answer3;
     String answer4;
+    Integer correctAnswer;
     Integer creatorId;
 
     // Getters and setters
@@ -67,16 +68,25 @@ public class Card {
         this.creatorId = creatorId;
     }
 
+    public Integer getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(Integer correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
+
     // Empty constructor needed for Jackson
     public Card(){}
 
     // Partial constructor - ex. if user submitted a card in a form (post) - see CardServlet.doPost()
-    public Card(String question, String answer1, String answer2, String answer3, String answer4, Integer creatorId) {
+    public Card(String question, String answer1, String answer2, String answer3, String answer4, Integer correctAnswer, Integer creatorId) {
         this.question = question;
         this.answer1 = answer1;
         this.answer2 = answer2;
         this.answer3 = answer3;
         this.answer4 = answer4;
+        this.correctAnswer = correctAnswer;
         this.creatorId = creatorId;
     }
 }

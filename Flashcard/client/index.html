@@ -3,25 +3,48 @@
 <html lang=en>
 	<head>
 		<title>Project 1</title>
+		<link rel="stylesheet" href="style.css">
 	</head>
 
 	<body>
-		<header>Pizza Place</header>
+		<header>Flashcards</header>
 
 		<main>
 
-			<form action="http://localhost:8080/PizzaPlace/user" method="POST">
-				<label for="first-name">First name: </label>
-				<input type="text" name="first-name" id="first-name" required />
-				<label for="last-name">Last name: </label>
-				<input type="text" name="last-name" id="last-name" required />
-				<label for="email" required>Your e-mail: </label>
-				<input type="email" name="email" id="email" />
-				<label for="message" id="message-box">Message: </label>
-				<textarea name="message" id="message"></textarea>
-				<input type="submit" value="Send" />
+			<div class="card-form card">
+				<form action="http://localhost:8080/Flashcard/card" method="POST">
+					<label for="question" class="form-question">Question: </label>
+					<input type="text" name="question" id="question" required />
 
-			</form>
+					<label for="answer1" class="form-question">Answer 1: </label>
+					<input type="text" name="answer1" id="answer1" required />
+
+					<label for="answer2" class="form-question">Answer 2: </label>
+					<input type="text" name="answer2" id="answer2" required />
+
+					<label for="answer3" class="form-question">Answer 3: </label>
+					<input type="text" name="answer3" id="answer3" required />
+
+					<label for="answer4" class="form-question">Answer 4: </label>
+					<input type="text" name="answer4" id="answer4" required />
+
+					<label for="correct-answer" class="form-question">Correct Answer #: </label><br />
+					<input type="radio" id="1" name="correct-answer" value="1">
+					<label for="1">Answer 1</label>
+					<input type="radio" id="2" name="correct-answer" value="2">
+					<label for="2">Answer 2</label>
+					<input type="radio" id="3" name="correct-answer" value="3">
+					<label for="3">Answer 3</label>
+					<input type="radio" id="4" name="correct-answer" value="4">
+					<label for="4">Answer 4</label>
+					<br />
+
+					<label for="user-id" class="form-question">User ID #: </label>
+					<input type="numeric" min="0" name="user-id" id="user-id" value="1" required />
+
+					<input type="submit" value="Send" />
+				</form>
+			</div>
 		</main>
 	</body>
 
