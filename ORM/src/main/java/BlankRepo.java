@@ -89,7 +89,9 @@ public class BlankRepo implements CRUD<Object> {
 
 
     //Probably need to change this so that the parameter is either an int id or string of some kind
-    //Because this seems to not really be necessary/do anything. As we give it an object and it just sort of returns it
+    //Having trouble getting a primary key / table id out of this in order to read from the database
+    //I think maybe we do 2 select statements in here, one that retrieves everything from the database,
+    //and then a second that just retrieves a row with a matching element(not id)
 @Override
 public Object read(Object obj){
         try {
@@ -111,6 +113,21 @@ public Object read(Object obj){
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setObject(1, primaryKey);
 
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                for(Field f : field){
+                    if(f.isAnnotationPresent(Column.class)){
+                        if(f.getAnnotation(Column.class).primaryKey()){
+                            f.setAccessible(true);
+                            f.set(obj, f.get(obj));
+                            f.setAccessible(false);
+                        }
+                    }
+                }
+
+            }
+
+
             return obj;
         }catch(SQLException | IllegalAccessException e){
             e.printStackTrace();
@@ -118,6 +135,44 @@ public Object read(Object obj){
         }
     return null;
 }
+//Uses object to find table name,
+// and uses the table id in order to retrieve the data associated with it from the database
+    //Problem with this is you need to know the id of the object you want to retrieve
+    public Object read(Object obj, Integer id){
+        try {
+            //reads object. make sure the primary key is named tableName_id where tableName is the name of the table
+            String tableName = obj.getClass().getAnnotation(Table.class).tableName();
+            String sql = "SELECT * FROM " + tableName + " WHERE " + tableName + "_id = ?";
+
+            //Looks for column marked as primary key (where primaryKey() = true) and then retrieves that object
+            // System.out.println(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setObject(1, id);
+
+            ResultSet rs = ps.executeQuery();
+            Field[] field = obj.getClass().getDeclaredFields();
+            int i = 1;
+            while(rs.next()){
+                for(Field f : field){
+                    if(f.isAnnotationPresent(Column.class)){
+                        f.setAccessible(true);
+                        Object o = rs.getObject(i);
+                        i++;
+                        f.set(obj, o);
+                        f.setAccessible(false);
+                    }
+                }
+            }
+
+
+            return obj;
+        }catch(SQLException | IllegalAccessException e){
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
 
 //This should update the database at the given id. The problem here is that it only works when we already have the
 //auto incremented id number. ie we can't update an object in the table that was created before running the project
