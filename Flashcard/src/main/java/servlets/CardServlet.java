@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.InvalidContentTypeException;
 import exceptions.InvalidInputException;
@@ -17,24 +19,30 @@ import utils.Parse;
 public class CardServlet extends HttpServlet {
 
     // This is a read method - ex. retrieve this card
-    // Expects: card = # (=card_id)
+    // Expects: card = # (=card_id) or json {"card": card_id}
     // Returns: Card object for that ID
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer cardNumber;
-        Card card = null;
+        CardId cardToGet = new CardId();
+        ObjectMapper mapper = new ObjectMapper();
+        String contentType = req.getHeader("Content-Type");
         try {
-            String cardNumberString = req.getParameter("card");
-            cardNumber = Parse.getNumberFromString(cardNumberString);
-            // Call orm and retrieve card
-            card = MockingORM.getCardFromCardNumber(cardNumber);
+            if (contentType.equals("application/json")) {
+                cardToGet = mapper.readValue(req.getInputStream(), CardId.class);
+            } else {
+                // This is some other kind of request - ex. plain/text with key/value pairs in url
+                String cardNumberString = req.getParameter("card_id");
+                cardNumber = Parse.getNumberFromString(cardNumberString);
+                cardToGet.setId(cardNumber);
+            }
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new InvalidInputException("Invalid input received");
         }
-
-        // package into json and send response
-        ObjectMapper mapper = new ObjectMapper();
+        // Call orm and retrieve card
+        Card card = MockingORM.getCardFromCardNumber(cardToGet.getId());
         // convert object to json
         String json = mapper.writeValueAsString(card);
         // Set response header and return to sender
@@ -53,22 +61,14 @@ public class CardServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
         ObjectMapper mapper = new ObjectMapper();
-        Card card = new Card();
-        // Note: the Content-Type must be sent on the client side (ex. postman) to application/json or text/plain
-        // the code as written will return a server error if no content type is defined
-        if (contentType.equals("application/json")) {
-            try {
+        Card card;
+        try {
+            if (contentType.equals("application/json")) {
                 card = mapper.readValue(req.getInputStream(), Card.class);
             }
-            catch (Exception e) {
-                //e.printStackTrace();
-                throw new InvalidInputException("Malformed JSON received.");
-            }
-        }
-        else {
-            // This is only used if the user submits their information in a form (ex. website).
-            if (contentType.equals("application/x-www-form-urlencoded")) {
-                try {
+            else {
+                // This is only used if the user submits their information in a form (ex. website).
+                if (contentType.equals("application/x-www-form-urlencoded")) {
                     String question = req.getParameter("question");
                     String answer1 = req.getParameter("answer1");
                     String answer2 = req.getParameter("answer2");
@@ -82,18 +82,12 @@ public class CardServlet extends HttpServlet {
                     Integer creatorId = Parse.getNumberFromString(creatorIdString);
 
                     card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
-                }
-                catch (Exception e) {
-                    System.out.println("Some error occurred");
-                    e.printStackTrace();
-                    throw new InvalidInputException("Some invalid input was received.");
+                } else {
+                    throw new InvalidContentTypeException("Unsupported content type " + contentType + " received.");
                 }
             }
-            else {
-                System.out.println("Content-Type " + contentType + " was received");
-                // this is really some error case - I'm not really sure how to handle this one
-                throw new InvalidContentTypeException("Unsupported content type received.  Please resubmit using application/json.");
-            }
+        } catch (Exception e) {
+            throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
         MockingORM.submitNewCard(card);
@@ -109,43 +103,36 @@ public class CardServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
         ObjectMapper mapper = new ObjectMapper();
-        Card card = new Card();
-        // Note: the Content-Type must be sent on the client side (ex. postman) to application/json or text/plain
-        // the code as written will return a server error if no content type is defined
-        if (contentType.equals("application/json")) {
-            System.out.println("Json detected!");
-            card = mapper.readValue(req.getInputStream(), Card.class);
-        }
-        else {
-            // maybe form data? Not sure if this section is needed
-            // form data type: application/x-www-form-urlencoded
-            System.out.println("Something other than json was received.");
-            System.out.println(req.getHeader("Content-Type"));
-            if (contentType.equals("application/x-www-form-urlencoded")) {
-                String question = req.getParameter("question");
-                String answer1 = req.getParameter("answer1");
-                String answer2 = req.getParameter("answer2");
-                String answer3 = req.getParameter("answer3");
-                String answer4 = req.getParameter("answer4");
-                String correctAnswerString = req.getParameter("correct-answer");
-                String creatorIdString = req.getParameter("user-id");
-
-                // get int form of correctAnswer + creatorId
-                Integer correctAnswer = Parse.getNumberFromString(correctAnswerString);
-                Integer creatorId = Parse.getNumberFromString(creatorIdString);
-
-                card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
+        Card card;
+        try {
+            if (contentType.equals("application/json")) {
+                card = mapper.readValue(req.getInputStream(), Card.class);
             }
             else {
-                System.out.println("Something else received!");
-                System.out.println(contentType);
-                // this is really some error case
-                //card = new Card();
-            }
-        }
+                // This is only used if the user submits their information in a form (ex. website).
+                if (contentType.equals("application/x-www-form-urlencoded")) {
+                    String question = req.getParameter("question");
+                    String answer1 = req.getParameter("answer1");
+                    String answer2 = req.getParameter("answer2");
+                    String answer3 = req.getParameter("answer3");
+                    String answer4 = req.getParameter("answer4");
+                    String correctAnswerString = req.getParameter("correct-answer");
+                    String creatorIdString = req.getParameter("user-id");
 
+                    // get int form of correctAnswer + creatorId
+                    Integer correctAnswer = Parse.getNumberFromString(correctAnswerString);
+                    Integer creatorId = Parse.getNumberFromString(creatorIdString);
+
+                    card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
+                } else {
+                    throw new InvalidContentTypeException("Unsupported content type " + contentType + " received.");
+                }
+            }
+        } catch (Exception e) {
+            throw new InvalidInputException("Some invalid input was received.");
+        }
         // return updated card to user
-        MockingORM.updateCard(card);
+        MockingORM.submitNewCard(card);
         String json = mapper.writeValueAsString(card);
         resp.setStatus(203);
         resp.getWriter().write(json);
@@ -160,19 +147,36 @@ public class CardServlet extends HttpServlet {
         try {
             ObjectMapper mapper = new ObjectMapper();
             card = mapper.readValue(req.getInputStream(), Card.class);
-            System.out.println("card_id: " + card.getcard_id());
+            System.out.println("card_id: " + card.getId());
         }
         catch (Exception e) {
             e.printStackTrace();
             System.out.println("Something went wrong in cardservlet.doDelete()");
-            System.out.println("card_id: " + card.getcard_id());
+            System.out.println("card_id: " + card.getId());
             throw new InvalidInputException("Bad delete request");
         }
         // maybe verify that the card # and creator are the same before deleting?
 
-        Boolean result = MockingORM.deleteCard(card.getcard_id());
+        Boolean result = MockingORM.deleteCard(card.getId());
         resp.setStatus(200);
-        String json = "{\"card\": " + card.getcard_id() + ", \"result\": " + result + "}";
+        String json = "{\"card\": " + card.getId() + ", \"deleted\": " + result + "}";
         resp.getWriter().write(json);
+    }
+}
+
+// Used to parse json requests with Jackson - in general should not be directly persisted or used elsewhere
+class CardId {
+    Integer id;
+    @JsonGetter("card_id")
+    public Integer getId() {
+        return id;
+    }
+
+    @JsonSetter("card_id")
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    CardId() {
     }
 }

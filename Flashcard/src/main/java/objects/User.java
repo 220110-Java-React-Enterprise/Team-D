@@ -1,21 +1,26 @@
 package objects;
 
 // holds the user data
+// The annotations help translate between the different names for user_id, id, userId etc.
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 //@Table(tableName="User")
 public class User {
     //@Column(columnName="user_id", primaryKey=true)
-    Integer user_id;
+    Integer id;
     String firstName;
     String lastName;
     String email;
 
-    public Integer getuser_id() {
-        return user_id;
+    @JsonGetter("user_id")
+    public Integer getId() {
+        return id;
     }
 
-    public void setuser_id(Integer user_id) {
-        this.user_id = user_id;
+    @JsonSetter("user_id")
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -39,6 +44,13 @@ public class User {
     }
 
     public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // Used by UserServlet.doPost() to handle new user registration
+    public User(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
     }
 
