@@ -2,6 +2,7 @@ package utils;
 
 import exceptions.InvalidInputException;
 import objects.Card;
+import objects.User;
 
 // These are just stubs mocking an ORM call.  They don't actually do anything.
 public class MockingORM {
@@ -13,7 +14,7 @@ public class MockingORM {
 
         // Below is mocking the successful retrieval of this card
         Card card = new Card();
-        card.setcard_id(card_id);
+        card.setId(card_id);
         card.setQuestion("What is an ORM?");
         card.setAnswer1("Ordinary Relational Map");
         card.setAnswer2("Object-Relational Mapping");
@@ -28,7 +29,7 @@ public class MockingORM {
     // Sends a new card to be persisted.
     // Returns the card but with the ID number populated.
     public static Card submitNewCard(Card card) {
-        card.setcard_id(3);
+        card.setId(3);
         System.out.println("Card has been submitted!");
         System.out.println("Mocking submit: " + card.getQuestion());
         return card;
@@ -44,6 +45,38 @@ public class MockingORM {
     // "deletes" an existing card
     public static Boolean deleteCard(Integer card_id) {
         System.out.println("Yeah sure, card #" + card_id + " was deleted.");
+        return true;
+    }
+
+    // "looks up" a user by ID (Integer) and returns a User object (their info)
+    public static User getUser(Integer id) {
+        User user = new User();
+        // setting fake information
+        user.setId(id);
+        user.setFirstName("Pooh");
+        user.setLastName("Bear");
+        user.setEmail("impooh@treehouse.net");
+        return user;
+    }
+
+    // "registers" a user and stores their information, returning an ID (Integer)
+    public static void addUser(User user) {
+        user.setId(4);
+    }
+
+    // "updates" a user, returning... something
+    public static Boolean updateUser(User user) throws InvalidInputException {
+        // this is in place of some sql error
+        if (user.getId() < 0) {
+            throw new InvalidInputException("Invalid user ID: " + user.getId());
+        }
+        System.out.println("User has been updated.");
+        return true;
+    }
+
+    // "deletes" a user, returning... something
+    public static Boolean deleteUser(Integer userId) {
+        System.out.println("Deleted user " + userId);
         return true;
     }
 }

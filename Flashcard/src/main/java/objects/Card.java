@@ -1,9 +1,12 @@
 package objects;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 //@Table(tableName="Card")
 public class Card {
     //@Column(columnName=card_id, primaryKey=true)
-    Integer card_id;
+    Integer id;
     String question;
     String answer1;
     String answer2;
@@ -13,13 +16,14 @@ public class Card {
     Integer creatorId;
 
     // Getters and setters
-
-    public Integer getcard_id() {
-        return card_id;
+    @JsonGetter("card_id")
+    public Integer getId() {
+        return id;
     }
 
-    public void setcard_id(Integer card_id) {
-        this.card_id = card_id;
+    @JsonSetter("card_id")
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getQuestion() {
@@ -62,18 +66,22 @@ public class Card {
         this.answer4 = answer4;
     }
 
+    @JsonGetter("creator_id")
     public Integer getCreatorId() {
         return creatorId;
     }
 
+    @JsonSetter("creator_id")
     public void setCreatorId(Integer creatorId) {
         this.creatorId = creatorId;
     }
 
+    @JsonGetter("correct_answer")
     public Integer getCorrectAnswer() {
         return correctAnswer;
     }
 
+    @JsonSetter("correct_answer")
     public void setCorrectAnswer(Integer correctAnswer) {
         this.correctAnswer = correctAnswer;
     }
