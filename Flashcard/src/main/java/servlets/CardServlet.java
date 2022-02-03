@@ -74,8 +74,8 @@ public class CardServlet extends HttpServlet {
                     String answer2 = req.getParameter("answer2");
                     String answer3 = req.getParameter("answer3");
                     String answer4 = req.getParameter("answer4");
-                    String correctAnswerString = req.getParameter("correct-answer");
-                    String creatorIdString = req.getParameter("user-id");
+                    String correctAnswerString = req.getParameter("correct_answer");
+                    String creatorIdString = req.getParameter("creator_id");
 
                     // get int form of correctAnswer + creatorId
                     Integer correctAnswer = Parse.getNumberFromString(correctAnswerString);

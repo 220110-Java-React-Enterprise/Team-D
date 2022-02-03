@@ -66,18 +66,22 @@ public class Card {
         this.answer4 = answer4;
     }
 
+    @JsonGetter("creator_id")
     public Integer getCreatorId() {
         return creatorId;
     }
 
+    @JsonSetter("creator_id")
     public void setCreatorId(Integer creatorId) {
         this.creatorId = creatorId;
     }
 
+    @JsonGetter("correct_answer")
     public Integer getCorrectAnswer() {
         return correctAnswer;
     }
 
+    @JsonSetter("correct_answer")
     public void setCorrectAnswer(Integer correctAnswer) {
         this.correctAnswer = correctAnswer;
     }
