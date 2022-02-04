@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.InvalidInputException;
 import objects.Card;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import utils.Log;
 import utils.MockingORM;
 import utils.Parse;
@@ -139,7 +138,7 @@ public class CardServlet extends HttpServlet {
      * @param  answer3   (String) one potential answer to the question.
      * @param  answer4   (String) one potential answer to the question.
      * @param  correct_answer   (Integer) the number identifying the correct answer.
-     * @return      a JSON object of the card with the card_id number.
+     * @return      a JSON representation of the updated card.
      */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -174,7 +173,7 @@ public class CardServlet extends HttpServlet {
      * Card will be deleted in the database.
      *
      * @param  card_id   (Integer) the identification number of the card to modify.
-     * @return      a JSON object of the card with the card_id number.
+     * @return      a JSON object of the card's id number and result of the deletion.
      * <p>
      *     <b>card_id:</b> (Integer) the number identifying the card to be deleted.
      *     <b>deleted:</b> (Boolean) Indicates whether or not the delete request was successful.
@@ -199,6 +198,12 @@ public class CardServlet extends HttpServlet {
 }
 
 // Used to parse json requests with Jackson - in general should not be directly persisted or used elsewhere
+/**
+ * Returns an object which only has one property (id).
+ * This is used to facilitate parsing json requests with Jackson in which only the
+ * card_id is sent, not the full card information.
+ * In general, this should not be directly persisted or used elsewhere.
+ */
 class CardId {
     Integer id;
     @JsonGetter("card_id")
