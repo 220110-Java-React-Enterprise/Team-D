@@ -42,12 +42,6 @@ public class BlankRepo implements CRUD<Object> {
             }
             String complete = sql + columnNames + sql2;
             PreparedStatement ps = con.prepareStatement(complete, Statement.RETURN_GENERATED_KEYS);
-            //Test to see what if the prepared statement is correct
-            System.out.println(complete);
-
-
-
-
 
        //adds values to the columns
             int count = 1;
@@ -79,6 +73,7 @@ public class BlankRepo implements CRUD<Object> {
                 }
             }
 
+            //Probably have to change the catch blocks, don't want to print stacktraces
         }catch (SQLException | IllegalAccessException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -88,64 +83,69 @@ public class BlankRepo implements CRUD<Object> {
     }
 
 
-    //Probably need to change this so that the parameter is either an int id or string of some kind
-    //Having trouble getting a primary key / table id out of this in order to read from the database
-    //I think maybe we do 2 select statements in here, one that retrieves everything from the database,
-    //and then a second that just retrieves a row with a matching element(not id)
+    //Reads an object from the database that has String s as a unique identifier
+    // (not primary key, probably best as a username or email)
+    //make sure the column that you are using to read data from is marked unique
+    // (might be able to add an annotation to guarantee this)
+    //NullPointerException will be thrown if the object's field associated with the string is null
+    //To avoid that, you need to set that field to the value that you want to search
+    //and then the read method will set the rest of the fields equal to what is in the database
 @Override
-public Object read(Object obj){
+public Object read(Object obj, String s){
         try {
             //reads object. make sure the primary key is named tableName_id where tableName is the name of the table
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
-            String sql = "SELECT * FROM " + tableName + " WHERE " + tableName + "_id = ?";
-            Integer primaryKey = null;
-
+            String columnName = "";
             Field[] field = obj.getClass().getDeclaredFields();
-            //Looks for column marked as primary key (where primaryKey() = true) and then retrieves that object
             for(Field f : field){
-                if(f.getAnnotation(Column.class).primaryKey()){
-                    f.setAccessible(true);
-                    primaryKey = (Integer)f.get(obj);
-                    f.setAccessible(false);
+                f.setAccessible(true);
+                if(f.isAnnotationPresent(Column.class)){
+                    if(f.get(obj).equals(s)){
+                        columnName = f.getAnnotation(Column.class).columnName();
+                    }
                 }
+                f.setAccessible(false);
             }
-           // System.out.println(sql);
+            String sql = "SELECT * FROM " + tableName + " WHERE " + columnName + " = ?";
+
+
+
+            //Looks for column marked as primary key (where primaryKey() = true) and then retrieves that object
+
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setObject(1, primaryKey);
+            ps.setObject(1, s);
 
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 for(Field f : field){
                     if(f.isAnnotationPresent(Column.class)){
-                        if(f.getAnnotation(Column.class).primaryKey()){
                             f.setAccessible(true);
-                            f.set(obj, f.get(obj));
+                        System.out.println(rs.getObject(f.getAnnotation(Column.class).columnName()));
+                            f.set(obj, rs.getObject(f.getAnnotation(Column.class).columnName()));
                             f.setAccessible(false);
-                        }
                     }
                 }
 
             }
 
-
             return obj;
+
+            //change this later
         }catch(SQLException | IllegalAccessException e){
             e.printStackTrace();
 
         }
     return null;
 }
+
 //Uses object to find table name,
 // and uses the table id in order to retrieve the data associated with it from the database
-    //Problem with this is you need to know the id of the object you want to retrieve
     public Object read(Object obj, Integer id){
         try {
             //reads object. make sure the primary key is named tableName_id where tableName is the name of the table
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
             String sql = "SELECT * FROM " + tableName + " WHERE " + tableName + "_id = ?";
 
-            //Looks for column marked as primary key (where primaryKey() = true) and then retrieves that object
-            // System.out.println(sql);
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setObject(1, id);
 
@@ -166,6 +166,8 @@ public Object read(Object obj){
 
 
             return obj;
+
+            //change this later
         }catch(SQLException | IllegalAccessException e){
             e.printStackTrace();
 
@@ -197,14 +199,12 @@ public Object update(Object obj){
             }
             String sql2 = "WHERE " + idName + " = ?";
            String complete = sql + columnName + sql2;
-           //getting the correct statement
-            System.out.println(complete);
+
             PreparedStatement ps = con.prepareStatement(complete);
             int count = 0;
             for (Field f : field) {
                 f.setAccessible(true);
                 Object fieldValue = f.get(obj);
-                System.out.println(fieldValue);
                 if(f.getAnnotation(Column.class).primaryKey()){
                     ps.setObject(field.length, fieldValue);
                 }else{
@@ -214,6 +214,8 @@ public Object update(Object obj){
                 count++;
             }
             ps.executeUpdate();
+
+            //change this later
         } catch (SQLException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -227,10 +229,13 @@ return obj;
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
             String idName = tableName + "_id";
             String sql = "DELETE FROM " + tableName + " WHERE " + idName + " = ?";
+
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
-            System.out.println(id);
+
             ps.executeUpdate();
+
+            //Change this later
         } catch (SQLException e) {
             e.printStackTrace();
         }
