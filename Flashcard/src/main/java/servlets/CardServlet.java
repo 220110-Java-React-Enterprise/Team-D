@@ -11,15 +11,37 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.InvalidInputException;
 import objects.Card;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import utils.Log;
 import utils.MockingORM;
 import utils.Parse;
 
+
+/**
+ * Handles requests for card-related data manipulation.
+ */
 public class CardServlet extends HttpServlet {
     Log log = Log.getLogger();
-    // This is a read method - ex. retrieve this card
-    // Expects: card = # (=card_id) or json {"card": card_id}
-    // Returns: Card object for that ID
+
+    /**
+     * Returns a Card object in JSON format for the specified ID.
+     * Input can either be in JSON format or in the url as a key/value pair.
+     * The JSON format requires the card_id as an integer.
+     * The key must be "card_id" with an integer.
+     *
+     * @param  card_id  an integer uniquely identifying the card.
+     * @return      a JSON representation of the requested card.
+     *
+     * <p>
+     *     <b>question:</b> (String) the question asked on the card.
+     *     <b>answer1:</b> (String) one of the potential answers to the question.
+     *     <b>answer2:</b> (String) one of the potential answers to the question.
+     *     <b>answer3:</b> (String) one of the potential answers to the question.
+     *     <b>answer4:</b> (String) one of the potential answers to the question.
+     *     <b>correct_answer:</b> (Integer) the number identifying the correct answer.
+     *     <b>creator_id:</b> (Integer) the user id of the person who created the card.
+     * </p>
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer cardNumber;
@@ -50,9 +72,20 @@ public class CardServlet extends HttpServlet {
     }
 
 
-    // This is a write method - ex. add this card
-    // Expects all the data for a Card object (except card_id)
-    // Returns: The card to user w/ an ID number
+    /**
+     * Returns the id number of a Card object in JSON format for the submitted card.
+     * Input can either be in JSON format or submitted as text/plain as part of a form.
+     * Requires several parameters to compose a complete card.
+     * Card will be created and persisted in the database.
+     *
+     * @param  question  (String) the question asked on the card.
+     * @param  answer1   (String) one potential answer to the question.
+     * @param  answer2   (String) one potential answer to the question.
+     * @param  answer3   (String) one potential answer to the question.
+     * @param  answer4   (String) one potential answer to the question.
+     * @param  correct_answer   (Integer) the number identifying the correct answer.
+     * @return      a JSON object of the card with the card_id number.
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
@@ -93,9 +126,21 @@ public class CardServlet extends HttpServlet {
         resp.getWriter().write(json);
     }
 
-    // This is an update method - ex. update this card's information
-    // Expects some or all of the data in a Card object and requires the card_id (card = #)
-    // Returns: TODO (some sort of confirmation?)
+
+    /**
+     * Returns an updated Card object in JSON format for the specified ID.
+     * Input should be in JSON format with all the parameters present.
+     * Card will be updated in the database.
+     *
+     * @param  card_id   (Integer) the identification number of the card to modify.
+     * @param  question  (String) the question asked on the card.
+     * @param  answer1   (String) one potential answer to the question.
+     * @param  answer2   (String) one potential answer to the question.
+     * @param  answer3   (String) one potential answer to the question.
+     * @param  answer4   (String) one potential answer to the question.
+     * @param  correct_answer   (Integer) the number identifying the correct answer.
+     * @return      a JSON object of the card with the card_id number.
+     */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
@@ -106,24 +151,8 @@ public class CardServlet extends HttpServlet {
                 card = mapper.readValue(req.getInputStream(), Card.class);
             }
             else {
-                // This is only used if the user submits their information in a form (ex. website).
-                if (contentType.equals("application/x-www-form-urlencoded")) {
-                    String question = req.getParameter("question");
-                    String answer1 = req.getParameter("answer1");
-                    String answer2 = req.getParameter("answer2");
-                    String answer3 = req.getParameter("answer3");
-                    String answer4 = req.getParameter("answer4");
-                    String correctAnswerString = req.getParameter("correct-answer");
-                    String creatorIdString = req.getParameter("user-id");
-
-                    // get int form of correctAnswer + creatorId
-                    Integer correctAnswer = Parse.getNumberFromString(correctAnswerString);
-                    Integer creatorId = Parse.getNumberFromString(creatorIdString);
-
-                    card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
-                } else {
-                    throw new InvalidInputException("Unsupported content type " + contentType + " received.");
-                }
+                log.write(new InvalidInputException("Unsupported content type " + contentType + " received."));
+                throw new InvalidInputException("Unsupported content type " + contentType + " received.");
             }
         } catch (Exception e) {
             log.write(e);
@@ -139,23 +168,32 @@ public class CardServlet extends HttpServlet {
     // This is a delete method - ex. delete this card
     // Expects the card_id at least (card = #)
     // Returns: TODO (some sort of confirmation?)
+    /**
+     * Returns a JSON object indicating if the deletion was successful.
+     * Input should be in JSON format with the card_id.
+     * Card will be deleted in the database.
+     *
+     * @param  card_id   (Integer) the identification number of the card to modify.
+     * @return      a JSON object of the card with the card_id number.
+     * <p>
+     *     <b>card_id:</b> (Integer) the number identifying the card to be deleted.
+     *     <b>deleted:</b> (Boolean) Indicates whether or not the delete request was successful.
+     * </p>
+     */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Card card = new Card();
+        CardId card;
         try {
             ObjectMapper mapper = new ObjectMapper();
-            card = mapper.readValue(req.getInputStream(), Card.class);
-            System.out.println("card_id: " + card.getId());
+            card = mapper.readValue(req.getInputStream(), CardId.class);
         }
         catch (Exception e) {
             log.write(e);
             throw new InvalidInputException("Bad delete request");
         }
-        // maybe verify that the card # and creator are the same before deleting?
-
         Boolean result = MockingORM.deleteCard(card.getId());
         resp.setStatus(200);
-        String json = "{\"card\": " + card.getId() + ", \"deleted\": " + result + "}";
+        String json = "{\"card_id\": " + card.getId() + ", \"deleted\": " + result + "}";
         resp.getWriter().write(json);
     }
 }
