@@ -50,11 +50,6 @@
         <location>/errorHandler</location>
     </error-page>
 
-    <error-page>
-        <exception-type>exceptions.InvalidContentTypeException</exception-type>
-        <location>/errorContentHandler</location>
-    </error-page>
-
     <!-- Here is the mapping. Note it is exactly like the others, a location/path is mapped to a servlet name, which is
      mapped to a servlet class-->
     <servlet>
@@ -66,12 +61,4 @@
         <url-pattern>/errorHandler</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>errorContentHandler</servlet-name>
-        <servlet-class>servlets.ErrorUsageServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>errorContentHandler</servlet-name>
-        <url-pattern>/errorContentHandler</url-pattern>
-    </servlet-mapping>
 </web-app>

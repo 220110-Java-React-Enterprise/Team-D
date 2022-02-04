@@ -3,13 +3,12 @@ package servlets;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.InvalidContentTypeException;
 import exceptions.InvalidInputException;
 import objects.Card;
 import objects.User;
+import utils.Log;
 import utils.MockingORM;
 import utils.Parse;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,7 @@ import java.io.IOException;
 
 
 public class UserServlet extends HttpServlet {
-
+    Log log = Log.getLogger();
     // This is a read method - ex. retrieve this user's information
     // Expects: user = # (=user_id) or { "user_id": # }
     // Returns: User object for that ID
@@ -39,7 +38,7 @@ public class UserServlet extends HttpServlet {
                 userToGet.setId(userId);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.write(e);
             throw new InvalidInputException("Invalid input received");
         }
         // Call orm and retrieve card
@@ -72,10 +71,12 @@ public class UserServlet extends HttpServlet {
 
                     user = new User(firstName, lastName, email);
                 } else {
-                    throw new InvalidContentTypeException("Unsupported content type " + contentType + " received.");
+                    log.write(new InvalidInputException("Unsupported content type " + contentType + " received."));
+                    throw new InvalidInputException("Unsupported content type " + contentType + " received.");
                 }
             }
         } catch (Exception e) {
+            log.write(e);
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
@@ -106,10 +107,12 @@ public class UserServlet extends HttpServlet {
 
                     user = new User(firstName, lastName, email);
                 } else {
-                    throw new InvalidContentTypeException("Unsupported content type " + contentType + " received.");
+                    log.write(new InvalidInputException("Unsupported content type " + contentType + " received."));
+                    throw new InvalidInputException("Unsupported content type " + contentType + " received.");
                 }
             }
         } catch (Exception e) {
+            log.write(e);
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
@@ -130,7 +133,7 @@ public class UserServlet extends HttpServlet {
             user = mapper.readValue(req.getInputStream(), User.class);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.write(e);
             throw new InvalidInputException("Bad delete request");
         }
 

@@ -5,19 +5,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.InvalidContentTypeException;
 import exceptions.InvalidInputException;
 import objects.Card;
+import utils.Log;
 import utils.MockingORM;
 import utils.Parse;
 
 public class CardServlet extends HttpServlet {
-
+    Log log = Log.getLogger();
     // This is a read method - ex. retrieve this card
     // Expects: card = # (=card_id) or json {"card": card_id}
     // Returns: Card object for that ID
@@ -38,7 +37,7 @@ public class CardServlet extends HttpServlet {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.write(e);
             throw new InvalidInputException("Invalid input received");
         }
         // Call orm and retrieve card
@@ -53,15 +52,12 @@ public class CardServlet extends HttpServlet {
 
     // This is a write method - ex. add this card
     // Expects all the data for a Card object (except card_id)
-    // Returns: TODO (some sort of confirmation?)
-    // TODO: (stretch goal) if requesting a card deletion, the request will have to come through as a post
-    // if sent via form because of html restrictions.  So either catch and forward to doDelete() or setup
-    // a different endpoint, or something
+    // Returns: The card to user w/ an ID number
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
         ObjectMapper mapper = new ObjectMapper();
-        Card card;
+        Card card = null;
         try {
             if (contentType.equals("application/json")) {
                 card = mapper.readValue(req.getInputStream(), Card.class);
@@ -83,10 +79,11 @@ public class CardServlet extends HttpServlet {
 
                     card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
                 } else {
-                    throw new InvalidContentTypeException("Unsupported content type " + contentType + " received.");
+                    throw new InvalidInputException("Unsupported content type " + contentType + " received.");
                 }
             }
         } catch (Exception e) {
+            log.write(e);
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
@@ -103,7 +100,7 @@ public class CardServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
         ObjectMapper mapper = new ObjectMapper();
-        Card card;
+        Card card = null;
         try {
             if (contentType.equals("application/json")) {
                 card = mapper.readValue(req.getInputStream(), Card.class);
@@ -125,10 +122,11 @@ public class CardServlet extends HttpServlet {
 
                     card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
                 } else {
-                    throw new InvalidContentTypeException("Unsupported content type " + contentType + " received.");
+                    throw new InvalidInputException("Unsupported content type " + contentType + " received.");
                 }
             }
         } catch (Exception e) {
+            log.write(e);
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
@@ -150,9 +148,7 @@ public class CardServlet extends HttpServlet {
             System.out.println("card_id: " + card.getId());
         }
         catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Something went wrong in cardservlet.doDelete()");
-            System.out.println("card_id: " + card.getId());
+            log.write(e);
             throw new InvalidInputException("Bad delete request");
         }
         // maybe verify that the card # and creator are the same before deleting?
