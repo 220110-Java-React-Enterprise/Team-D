@@ -1,18 +1,23 @@
 package utils;
 
-
 import java.io.FileWriter;
 import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-// Handles logging the errors
+
+/**
+ * This class handles the error logging.
+ */
 public class Log {
     private static Log log;
     private static String path;
     private final int stackTraceSize;
 
-    // Returns an instance of the logger for public use
+
+    /**
+     * Returns an instance of the logger for public use, since it is a singleton.
+     */
     public static Log getLogger() {
         if (log == null) {
             log = new Log();
@@ -21,7 +26,10 @@ public class Log {
     }
 
 
-    // Writes given text to file
+    /**
+     * Takes String input and writes it to a file.
+     * @param  text a String, the text to persist in a log file.
+     */
     private void writeText(String text) {
         String filename = getFileName();
         try (Writer fileWriter = new FileWriter(filename, true)) {
@@ -31,7 +39,11 @@ public class Log {
         }
     }
 
-    // When an exception is thrown, log each line to a file
+
+    /**
+     * When called, this writes exceptions to a log file.
+     * @param  e    an exception that is thrown.
+     */
     public void write(Exception e) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getTimestamp())
@@ -43,6 +55,26 @@ public class Log {
         writeText(stringBuilder.toString());
     }
 
+
+    /**
+     * When called, this logs text to a log file - error text or notices.
+     * @param  text a String of the text to persist in a log file.
+     */
+    public void write(String text) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getTimestamp())
+                .append(" - ")
+                .append(text)
+                .append("\n");
+        write(stringBuilder.toString());
+    }
+
+
+    /**
+     * Returns a formatted String to read a stack trace more easily.
+     * Input is an exception that was thrown.
+     * @param  e    any Exception
+     */
     private String formatStackTrace(Exception e) {
         StackTraceElement[] stackTrace = e.getStackTrace();
         StringBuilder stringBuilder = new StringBuilder();
@@ -54,23 +86,21 @@ public class Log {
         return stringBuilder.toString();
     }
 
-    // Builds the string that will be written in the file for a given exception
-    public void write(String text) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getTimestamp())
-                .append(" - ")
-                .append(text)
-                .append("\n");
-        write(stringBuilder.toString());
-    }
 
-    // Returns the date and time in String format
+    /**
+     * Returns a String of the current date in a specified format.
+     * @return      a String of the date
+     */
     private String getTimestamp() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[yyyy-MM-dd HH:mm:ss]");
         return formatter.format(LocalDateTime.now());
     }
 
-    // Returns the filename in String form of format year-month-day.log
+
+    /**
+     * Returns a String of the path and filename of the log file.
+     * @return      String of the filename
+     */
     private String getFileName() {
         return path + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ".log";
     }
