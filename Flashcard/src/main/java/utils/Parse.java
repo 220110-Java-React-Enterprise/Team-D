@@ -3,11 +3,14 @@ package utils;
 import exceptions.InvalidInputException;
 
 public class Parse {
-
-    // Attempts to retrieve the card number (integer) from a string
-    // generic-ifying this since it could be used for user ID's too
-    // Expects a string representation of a number; returns an integer form
-    // or returns null if it is an error or negative
+    
+    /**
+     * Attempts to retrieve a number from a string.
+     * Returns an Integer of the number sent, or a null value if it is negative or fails.
+     * Input is an integer in String format.
+     * @param  numberString     a String of the number to convert
+     * @return      an Integer of the resulting number
+     */
     public static Integer getNumberFromString(String numberString) throws InvalidInputException {
         Integer number;
 

@@ -4,7 +4,11 @@ import exceptions.InvalidInputException;
 import objects.Card;
 import objects.User;
 
-// These are just stubs mocking an ORM call.  They don't actually do anything.
+
+/**
+ * This is a placeholder class that mocks the ORM interaction.  Only used for development,
+ * none of the methods here actually do anything.
+ */
 public class MockingORM {
     public static Card getCardFromCardNumber (Integer card_id) throws InvalidInputException {
         // Assume some erroneous number
