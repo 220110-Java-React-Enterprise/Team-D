@@ -5,6 +5,9 @@ package objects;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+/**
+ * The User class represents a user of the app.
+ */
 //@Table(tableName="User")
 public class User {
     //@Column(columnName="user_id", primaryKey=true)
@@ -23,18 +26,22 @@ public class User {
         this.id = id;
     }
 
+    @JsonGetter("first_name")
     public String getFirstName() {
         return firstName;
     }
 
+    @JsonSetter("first_name")
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    @JsonGetter("last_name")
     public String getLastName() {
         return lastName;
     }
 
+    @JsonSetter("last_name")
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -47,7 +54,11 @@ public class User {
         this.email = email;
     }
 
-    // Used by UserServlet.doPost() to handle new user registration
+    /**
+     * This constructor returns a User object.
+     * Requires the first_name, last_name, and email.
+     * This is used by UserServlet.doPost() for non-json requests.
+     */
     public User(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;

@@ -16,12 +16,28 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-
+/**
+ * Handles requests for user-related data manipulation.
+ */
 public class UserServlet extends HttpServlet {
     Log log = Log.getLogger();
-    // This is a read method - ex. retrieve this user's information
-    // Expects: user = # (=user_id) or { "user_id": # }
-    // Returns: User object for that ID
+
+    /**
+     * Returns a User object in JSON format for the specified ID.
+     * Input can either be in JSON format or in the url as a key/value pair.
+     * The JSON format requires the user_id as an integer.
+     * The key must be "user_id" with an integer value.
+     *
+     * @param  user_id  an integer uniquely identifying the user.
+     * @return      a JSON representation of the requested user.
+     *
+     * <p>
+     *     <b>user_id:</b> (Integer) the user's identification number.
+     *     <b>first_name:</b> (String) the first name of the user.
+     *     <b>last_name:</b> (String) the last name of the user.
+     *     <b>email:</b> (String) the user's email address.
+     * </p>
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer userId;
@@ -50,9 +66,25 @@ public class UserServlet extends HttpServlet {
         resp.getWriter().print(json);
     }
 
-    // This is a write method - ex. add this user's information
-    // Expects all the data for a User object (except user_id)
-    // Returns: TODO (some sort of confirmation?)
+
+    /**
+     * Returns a User object in JSON format after successful persistence of the data.
+     * Input can either be in JSON format or in the url as a key/value pair.
+     * The JSON format requires the first_name, last_name, and email.
+     * The keys must be in key-value pairs.
+     *
+     * @param  first_name  a String of the user's first name.
+     * @param  last_name   a String of the user's last name.
+     * @param  email       a String of the user's email.
+     * @return      a JSON representation of the requested user.
+     *
+     * <p>
+     *     <b>user_id:</b>  (Integer) the user's identification number.
+     *     <b>first_name:</b> (String) the first name of the user.
+     *     <b>last_name:</b> (String) the last name of the user.
+     *     <b>email:</b> (String) the user's email address.
+     * </p>
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
@@ -65,8 +97,8 @@ public class UserServlet extends HttpServlet {
             else {
                 // This is only used if the user submits their information in a form (ex. website).
                 if (contentType.equals("application/x-www-form-urlencoded")) {
-                    String firstName = req.getParameter("first-name");
-                    String lastName = req.getParameter("last-name");
+                    String firstName = req.getParameter("first_name");
+                    String lastName = req.getParameter("last_name");
                     String email = req.getParameter("email");
 
                     user = new User(firstName, lastName, email);
@@ -86,9 +118,18 @@ public class UserServlet extends HttpServlet {
         resp.getWriter().write(json);
     }
 
-    // This is an update method - ex. update this user's information
-    // Expects some or all of the data in a User object and requires the user_id (user = #)
-    // Returns: TODO (some sort of confirmation?)
+
+    /**
+     * Returns a User object in JSON format for the specified ID.
+     * Input must be in JSON format with all the required fields for a User object.
+     *
+     * @param  user_id  an integer uniquely identifying the user.
+     * @param  first_name   a string of the user's first name.
+     * @param  last_name    a string of the user's last name.
+     * @param  email    the user's email address.
+     * @return      a JSON representation of the requested user.
+     *
+     */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
@@ -122,9 +163,15 @@ public class UserServlet extends HttpServlet {
         resp.getWriter().write(json);
     }
 
-    // This is a delete method - ex. delete this user's information
-    // Expects the user_id at least (user = #)
-    // Returns: TODO (some sort of confirmation?)
+
+    /**
+     * Returns a JSON object indicating if the deletion was successful.
+     * Input should be in JSON format with the user_id.
+     * User will be deleted in the database.
+     *
+     * @param  user_id   (Integer) the identification number of the user to remove.
+     * @return      a JSON object of the user's id number, name, and result of the deletion.
+     */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user;
@@ -139,12 +186,16 @@ public class UserServlet extends HttpServlet {
 
         Boolean result = MockingORM.deleteUser(user.getId());
         resp.setStatus(200);
-        String json = "{\"user_id\": " + user.getId() + ", \"deleted\": " + result + "}";
+        String json = "{\"user_id\": " + user.getId() + ", \"name\": " + user.getFirstName() + user.getLastName() + ", \"deleted\": " + result + "}";
         resp.getWriter().write(json);
     }
 }
 
-// Used to parse json requests with Jackson - in general should not be directly persisted or used elsewhere
+
+/**
+ * Returns a UserID object which only has one property, id.
+ * This is to facilitate parsing JSON requests with Jackson and shouldn't be persisted/used elsewhere.
+ */
 class UserId {
     Integer id;
 

@@ -164,9 +164,7 @@ public class CardServlet extends HttpServlet {
         resp.getWriter().write(json);
     }
 
-    // This is a delete method - ex. delete this card
-    // Expects the card_id at least (card = #)
-    // Returns: TODO (some sort of confirmation?)
+
     /**
      * Returns a JSON object indicating if the deletion was successful.
      * Input should be in JSON format with the card_id.
@@ -197,7 +195,7 @@ public class CardServlet extends HttpServlet {
     }
 }
 
-// Used to parse json requests with Jackson - in general should not be directly persisted or used elsewhere
+
 /**
  * Returns an object which only has one property (id).
  * This is used to facilitate parsing json requests with Jackson in which only the
