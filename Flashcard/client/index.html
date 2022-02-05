@@ -11,24 +11,24 @@
 
 		<main>
 
-			<div class="card-form card">
+			<div class="card">
 				<form action="http://localhost:8080/Flashcard/card" method="POST">
-					<label for="question" class="form-question">Question: </label>
+					<label for="question">Question: </label>
 					<input type="text" name="question" id="question" required />
 
-					<label for="answer1" class="form-question">Answer 1: </label>
+					<label for="answer1">Answer 1: </label>
 					<input type="text" name="answer1" id="answer1" required />
 
-					<label for="answer2" class="form-question">Answer 2: </label>
+					<label for="answer2">Answer 2: </label>
 					<input type="text" name="answer2" id="answer2" required />
 
-					<label for="answer3" class="form-question">Answer 3: </label>
+					<label for="answer3">Answer 3: </label>
 					<input type="text" name="answer3" id="answer3" required />
 
-					<label for="answer4" class="form-question">Answer 4: </label>
+					<label for="answer4">Answer 4: </label>
 					<input type="text" name="answer4" id="answer4" required />
 
-					<label for="correct_answer" class="form-question">Correct Answer #: </label><br />
+					<label for="correct_answer">Correct Answer #: </label><br />
 					<input type="radio" id="1" name="correct_answer" value="1">
 					<label for="1">Answer 1</label>
 					<input type="radio" id="2" name="correct_answer" value="2">
@@ -39,7 +39,7 @@
 					<label for="4">Answer 4</label>
 					<br />
 
-					<label for="creator_id" class="form-question">User ID #: </label>
+					<label for="creator_id">User ID #: </label>
 					<input type="numeric" min="0" name="creator_id" id="creator_id" value="1" required />
 
 					<input type="submit" value="Send" />
