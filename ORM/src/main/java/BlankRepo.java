@@ -11,7 +11,7 @@ public class BlankRepo implements CRUD<Object> {
     @Override
     public Object create(Object obj){
         try{
-            //Checks if Table annotation is present first
+            //Checks if Table annotation is present first, might need to change how this is handled
             if(!obj.getClass().isAnnotationPresent(Table.class)){
                 throw new Exception("Missing @Table Annotation");
             }
