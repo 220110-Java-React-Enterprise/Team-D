@@ -8,11 +8,7 @@ public class Card {
     //@Column(columnName=card_id, primaryKey=true)
     Integer id;
     String question;
-    String answer1;
-    String answer2;
-    String answer3;
-    String answer4;
-    Integer correctAnswer;
+    String answer;
     Integer creatorId;
 
     // Getters and setters
@@ -34,36 +30,12 @@ public class Card {
         this.question = question;
     }
 
-    public String getAnswer1() {
-        return answer1;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setAnswer1(String answer1) {
-        this.answer1 = answer1;
-    }
-
-    public String getAnswer2() {
-        return answer2;
-    }
-
-    public void setAnswer2(String answer2) {
-        this.answer2 = answer2;
-    }
-
-    public String getAnswer3() {
-        return answer3;
-    }
-
-    public void setAnswer3(String answer3) {
-        this.answer3 = answer3;
-    }
-
-    public String getAnswer4() {
-        return answer4;
-    }
-
-    public void setAnswer4(String answer4) {
-        this.answer4 = answer4;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     @JsonGetter("creator_id")
@@ -76,27 +48,13 @@ public class Card {
         this.creatorId = creatorId;
     }
 
-    @JsonGetter("correct_answer")
-    public Integer getCorrectAnswer() {
-        return correctAnswer;
-    }
-
-    @JsonSetter("correct_answer")
-    public void setCorrectAnswer(Integer correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
-
     // Empty constructor needed for Jackson
     public Card(){}
 
     // Partial constructor - ex. if user submitted a card in a form (post) - see CardServlet.doPost()
-    public Card(String question, String answer1, String answer2, String answer3, String answer4, Integer correctAnswer, Integer creatorId) {
+    public Card(String question, String answer, Integer creatorId) {
         this.question = question;
-        this.answer1 = answer1;
-        this.answer2 = answer2;
-        this.answer3 = answer3;
-        this.answer4 = answer4;
-        this.correctAnswer = correctAnswer;
+        this.answer = answer;
         this.creatorId = creatorId;
     }
 }

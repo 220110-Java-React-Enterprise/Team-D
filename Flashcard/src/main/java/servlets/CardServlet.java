@@ -78,11 +78,7 @@ public class CardServlet extends HttpServlet {
      * Card will be created and persisted in the database.
      *
      * @param  question  (String) the question asked on the card.
-     * @param  answer1   (String) one potential answer to the question.
-     * @param  answer2   (String) one potential answer to the question.
-     * @param  answer3   (String) one potential answer to the question.
-     * @param  answer4   (String) one potential answer to the question.
-     * @param  correct_answer   (Integer) the number identifying the correct answer.
+     * @param  answer   (String) the potential answer to the question.
      * @return      a JSON object of the card with the card_id number.
      */
     @Override
@@ -98,18 +94,13 @@ public class CardServlet extends HttpServlet {
                 // This is only used if the user submits their information in a form (ex. website).
                 if (contentType.equals("application/x-www-form-urlencoded")) {
                     String question = req.getParameter("question");
-                    String answer1 = req.getParameter("answer1");
-                    String answer2 = req.getParameter("answer2");
-                    String answer3 = req.getParameter("answer3");
-                    String answer4 = req.getParameter("answer4");
-                    String correctAnswerString = req.getParameter("correct_answer");
+                    String answer = req.getParameter("answer");
                     String creatorIdString = req.getParameter("creator_id");
 
                     // get int form of correctAnswer + creatorId
-                    Integer correctAnswer = Parse.getNumberFromString(correctAnswerString);
                     Integer creatorId = Parse.getNumberFromString(creatorIdString);
 
-                    card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
+                    card = new Card(question, answer, creatorId);
                 } else {
                     throw new InvalidInputException("Unsupported content type " + contentType + " received.");
                 }
@@ -133,11 +124,7 @@ public class CardServlet extends HttpServlet {
      *
      * @param  card_id   (Integer) the identification number of the card to modify.
      * @param  question  (String) the question asked on the card.
-     * @param  answer1   (String) one potential answer to the question.
-     * @param  answer2   (String) one potential answer to the question.
-     * @param  answer3   (String) one potential answer to the question.
-     * @param  answer4   (String) one potential answer to the question.
-     * @param  correct_answer   (Integer) the number identifying the correct answer.
+     * @param  answer   (String) the answer to the question.
      * @return      a JSON representation of the updated card.
      */
     @Override

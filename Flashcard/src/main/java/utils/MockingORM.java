@@ -20,10 +20,7 @@ public class MockingORM {
         Card card = new Card();
         card.setId(card_id);
         card.setQuestion("What is an ORM?");
-        card.setAnswer1("Ordinary Relational Map");
-        card.setAnswer2("Object-Relational Mapping");
-        card.setAnswer3("Object-Rotational Mapping");
-        card.setAnswer4("Objective Relation Map");
+        card.setAnswer("Object Relational Mapping");
         card.setCreatorId(0);
 
         // Also should check if card exists / is not null
