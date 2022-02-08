@@ -15,6 +15,12 @@ public class BlankRepo implements CRUD<Object> {
         con = ConnectionManager.getConnection();
     }
 
+    /**
+     * This method adds a row to a SQL table. The table to add to is found through the object's class being marked
+     * by the @Table annotation.
+     * @param obj is used to determine the table to add to and what fields correspond to what column
+     * @return
+     */
     @Override
     public Object create(Object obj){
         try{
@@ -81,8 +87,6 @@ public class BlankRepo implements CRUD<Object> {
             }
 
             //Probably have to change the catch blocks, don't want to print stacktraces
-        }catch (SQLException | IllegalAccessException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,16 +94,22 @@ public class BlankRepo implements CRUD<Object> {
     }
 
 
-    //Reads an object from the database that has String s as a unique identifier
-    // (not primary key, probably best as a username or email)
-    //make sure the column that you are using to read data from is marked unique
-    // (might be able to add an annotation to guarantee this)
-    //NullPointerException will be thrown if the object's field associated with the string is null
-    //To avoid that, you need to set that field to the value that you want to search
-    //and then the read method will set the rest of the fields equal to what is in the database
-@Override
+    /**
+     * Queries a row(s) in a table with a column that contains String s,
+     * and returns an object with fields equal to the columns of the table.
+     * obj's class needs to be marked with @Table annotation.
+     * It may be desired to have String s be a unique SQL column in order to retrieve data from only one row.
+     * @param obj this is used to determine which table to query
+     * @param s (String) s is used to find a row in the table where a column has String s as a value
+     * @return
+     */
+    @Override
 public Object read(Object obj, String s){
         try {
+            if(!obj.getClass().isAnnotationPresent(Table.class)){
+                throw new Exception("Missing @annotations.Table Annotation");
+            }
+
             //reads object. make sure the primary key is named tableName_id where tableName is the name of the table
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
             String columnName = "";
@@ -114,10 +124,6 @@ public Object read(Object obj, String s){
                 f.setAccessible(false);
             }
             String sql = "SELECT * FROM " + tableName + " WHERE " + columnName + " = ?";
-
-
-
-            //Looks for column marked as primary key (where primaryKey() = true) and then retrieves that object
 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setObject(1, s);
@@ -138,17 +144,26 @@ public Object read(Object obj, String s){
             return obj;
 
             //change this later
-        }catch(SQLException | IllegalAccessException e){
+        } catch(Exception e){
             e.printStackTrace();
 
         }
-    return null;
+        return null;
 }
 
-//Uses object to find table name,
-// and uses the table id in order to retrieve the data associated with it from the database
+
+    /**
+     * Queries a row in a table at id, and returns an object with fields equal to the columns of the table
+     * obj's class needs to be marked with @Table annotation.
+     * @param obj the object determines which table that is to be read from
+     * @param id id is used to identify which row to query from
+     * @return
+     */
     public Object read(Object obj, Integer id){
         try {
+            if(!obj.getClass().isAnnotationPresent(Table.class)){
+                throw new Exception("Missing @annotations.Table Annotation");
+            }
             //reads object. make sure the primary key is named tableName_id where tableName is the name of the table
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
             String sql = "SELECT * FROM " + tableName + " WHERE " + tableName + "_id = ?";
@@ -175,7 +190,7 @@ public Object read(Object obj, String s){
             return obj;
 
             //change this later
-        }catch(SQLException | IllegalAccessException e){
+        } catch(Exception e){
             e.printStackTrace();
 
         }
@@ -183,12 +198,19 @@ public Object read(Object obj, String s){
     }
 
 
-//This should update the database at the given id. The problem here is that it only works when we already have the
-//auto incremented id number. ie we can't update an object in the table that was created before running the project
-//this might be fixed if we change the read function to take an integer id instead of the object
+    /**
+     * This method updates the SQL database for a given object. Change the object through its getters and setters then
+     * put the object through this method to update the database.
+     * obj's class needs to be marked with @Table annotation
+     * @param obj this is used to determine which table to manipulate
+     * @return
+     */
 @Override
 public Object update(Object obj){
         try{
+            if(!obj.getClass().isAnnotationPresent(Table.class)){
+                throw new Exception("Missing @annotations.Table Annotation");
+            }
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
             String idName = tableName + "_id";
             String sql = "UPDATE " + tableName + " SET";
@@ -223,16 +245,25 @@ public Object update(Object obj){
             ps.executeUpdate();
 
             //change this later
-        } catch (SQLException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-return obj;
+    return obj;
 }
 
-//Delete works, just need a good way to get id
+
+    /**
+     * This method deletes a column from a SQL table.
+     * obj's class needs to be marked with @Table annotation.
+     * @param obj this is used to determine which table to manipulate
+     * @param id id is the primary id of the row to be deleted from the table
+     */
     @Override
     public void delete(Object obj, Integer id){
         try{
+            if(!obj.getClass().isAnnotationPresent(Table.class)){
+                throw new Exception("Missing @annotations.Table Annotation");
+            }
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
             String idName = tableName + "_id";
             String sql = "DELETE FROM " + tableName + " WHERE " + idName + " = ?";
@@ -243,7 +274,7 @@ return obj;
             ps.executeUpdate();
 
             //Change this later
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
