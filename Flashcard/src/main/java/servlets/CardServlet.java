@@ -28,7 +28,7 @@ public class CardServlet extends HttpServlet {
      * The JSON format requires the card_id as an integer.
      * The key must be "card_id" with an integer.
      *
-     * @param  card_id  an integer uniquely identifying the card.
+     * @param - card_id  an integer uniquely identifying the card.
      * @return      a JSON representation of the requested card.
      *
      * <p>
@@ -73,8 +73,8 @@ public class CardServlet extends HttpServlet {
      * Requires several parameters to compose a complete card.
      * Card will be created and persisted in the database.
      *
-     * @param  question  (String) the question asked on the card.
-     * @param  answer   (String) the potential answer to the question.
+     * @param - question  (String) the question asked on the card.
+     * @param - answer   (String) the potential answer to the question.
      * @return      a JSON object of the card with the card_id number.
      */
     @Override
@@ -118,9 +118,9 @@ public class CardServlet extends HttpServlet {
      * Input should be in JSON format with all the parameters present.
      * Card will be updated in the database.
      *
-     * @param  card_id   (Integer) the identification number of the card to modify.
-     * @param  question  (String) the question asked on the card.
-     * @param  answer   (String) the answer to the question.
+     * @param - card_id   (Integer) the identification number of the card to modify.
+     * @param - question  (String) the question asked on the card.
+     * @param - answer   (String) the answer to the question.
      * @return      a JSON representation of the updated card.
      */
     @Override
@@ -153,7 +153,7 @@ public class CardServlet extends HttpServlet {
      * Input should be in JSON format with the card_id.
      * Card will be deleted in the database.
      *
-     * @param  card_id   (Integer) the identification number of the card to modify.
+     * @param - card_id   (Integer) the identification number of the card to modify.
      * @return      a JSON object of the card's id number and result of the deletion.
      * <p>
      *     <b>card_id:</b> (Integer) the number identifying the card to be deleted.
