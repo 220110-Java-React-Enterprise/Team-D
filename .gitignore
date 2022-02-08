@@ -4,6 +4,7 @@
 *.class
 **/target
 **/**/target
+./ORM/target
 
 # Log file
 *.log
