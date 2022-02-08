@@ -131,13 +131,13 @@ public class CardServlet extends HttpServlet {
      * Input should be in JSON format with all the parameters present.
      * Card will be updated in the database.
      *
-     * @param  card_id   (Integer) the identification number of the card to modify.
-     * @param  question  (String) the question asked on the card.
-     * @param  answer1   (String) one potential answer to the question.
-     * @param  answer2   (String) one potential answer to the question.
-     * @param  answer3   (String) one potential answer to the question.
-     * @param  answer4   (String) one potential answer to the question.
-     * @param  correct_answer   (Integer) the number identifying the correct answer.
+     * @param - card_id   (Integer) the identification number of the card to modify.
+     * @param - question  (String) the question asked on the card.
+     * @param - answer1   (String) one potential answer to the question.
+     * @param - answer2   (String) one potential answer to the question.
+     * @param - answer3   (String) one potential answer to the question.
+     * @param - answer4   (String) one potential answer to the question.
+     * @param - correct_answer   (Integer) the number identifying the correct answer.
      * @return      a JSON representation of the updated card.
      */
     @Override
