@@ -3,6 +3,7 @@
 # Compiled class file
 *.class
 ./ORM/target
+*.lst
 
 # Log file
 *.log
