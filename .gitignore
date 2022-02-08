@@ -2,8 +2,8 @@
 
 # Compiled class file
 *.class
-./ORM/target
-*.lst
+**/target
+**/**/target
 
 # Log file
 *.log
