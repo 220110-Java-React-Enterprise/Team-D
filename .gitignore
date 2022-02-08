@@ -5,6 +5,7 @@
 **/target
 **/**/target
 ./ORM/target
+*.properties
 
 # Log file
 *.log

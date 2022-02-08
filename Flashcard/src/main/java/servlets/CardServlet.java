@@ -14,6 +14,7 @@ import objects.Card;
 import utils.Log;
 import utils.MockingORM;
 import utils.Parse;
+import services.BlankRepo;
 
 
 /**
@@ -21,7 +22,7 @@ import utils.Parse;
  */
 public class CardServlet extends HttpServlet {
     Log log = Log.getLogger();
-
+    BlankRepo repo = new BlankRepo();
     /**
      * Returns a Card object in JSON format for the specified ID.
      * Input can either be in JSON format or in the url as a key/value pair.
@@ -63,6 +64,7 @@ public class CardServlet extends HttpServlet {
         }
         // Call orm and retrieve card
         Card card = MockingORM.getCardFromCardNumber(cardToGet.getId());
+        // Card card = repo.read(card, card_id);
         // convert object to json
         String json = mapper.writeValueAsString(card);
         // Set response header and return to sender
