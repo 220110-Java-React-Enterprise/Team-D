@@ -2,6 +2,7 @@
 
 # Compiled class file
 *.class
+./ORM/target
 
 # Log file
 *.log
