@@ -3,9 +3,12 @@ package objects;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-//@Table(tableName="Card")
+import annotations.Table;
+import annotations.Column;
+
+@Table(tableName="Card")
 public class Card {
-    //@Column(columnName=card_id, primaryKey=true)
+    @Column(columnName="card_id", primaryKey=true)
     Integer id;
     String question;
     String answer;

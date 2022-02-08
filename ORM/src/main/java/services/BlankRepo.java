@@ -1,3 +1,10 @@
+package services;
+
+import annotations.Column;
+import annotations.Table;
+import interfaces.CRUD;
+import services.ConnectionManager;
+
 import java.lang.reflect.Field;
 import java.sql.*;
 
@@ -13,9 +20,9 @@ public class BlankRepo implements CRUD<Object> {
         try{
             //Checks if Table annotation is present first, might need to change how this is handled
             if(!obj.getClass().isAnnotationPresent(Table.class)){
-                throw new Exception("Missing @Table Annotation");
+                throw new Exception("Missing @annotations.Table Annotation");
             }
-            //Uses Table Annotation for the table name
+            //Uses annotations.Table Annotation for the table name
             String sql = "INSERT INTO " + obj.getClass().getAnnotation(Table.class).tableName();
             String columnNames = " (";
             Field[] field = obj.getClass().getDeclaredFields();

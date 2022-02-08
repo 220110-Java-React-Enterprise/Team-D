@@ -33,11 +33,7 @@ public class CardServlet extends HttpServlet {
      *
      * <p>
      *     <b>question:</b> (String) the question asked on the card.
-     *     <b>answer1:</b> (String) one of the potential answers to the question.
-     *     <b>answer2:</b> (String) one of the potential answers to the question.
-     *     <b>answer3:</b> (String) one of the potential answers to the question.
-     *     <b>answer4:</b> (String) one of the potential answers to the question.
-     *     <b>correct_answer:</b> (Integer) the number identifying the correct answer.
+     *     <b>answer:</b> (String) the answer to the question.
      *     <b>creator_id:</b> (Integer) the user id of the person who created the card.
      * </p>
      */
@@ -85,7 +81,7 @@ public class CardServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String contentType = req.getHeader("Content-Type");
         ObjectMapper mapper = new ObjectMapper();
-        Card card = null;
+        Card card;
         try {
             if (contentType.equals("application/json")) {
                 card = mapper.readValue(req.getInputStream(), Card.class);
