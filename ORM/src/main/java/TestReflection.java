@@ -1,3 +1,6 @@
+import annotations.Column;
+import annotations.Table;
+
 @Table(tableName = "test_table")
 public class TestReflection {
     @Column(columnName = "test_table_id", primaryKey = true)
