@@ -14,6 +14,7 @@ import objects.Card;
 import utils.Log;
 import utils.MockingORM;
 import utils.Parse;
+import services.BlankRepo;
 
 
 /**
@@ -21,19 +22,23 @@ import utils.Parse;
  */
 public class CardServlet extends HttpServlet {
     Log log = Log.getLogger();
-
+    BlankRepo repo = new BlankRepo();
     /**
      * Returns a Card object in JSON format for the specified ID.
      * Input can either be in JSON format or in the url as a key/value pair.
      * The JSON format requires the card_id as an integer.
      * The key must be "card_id" with an integer.
      *
-     * @param  card_id  an integer uniquely identifying the card.
+     * @param - card_id  an integer uniquely identifying the card.
      * @return      a JSON representation of the requested card.
      *
      * <p>
      *     <b>question:</b> (String) the question asked on the card.
-     *     <b>answer:</b> (String) the answer to the question.
+     *     <b>answer1:</b> (String) one of the potential answers to the question.
+     *     <b>answer2:</b> (String) one of the potential answers to the question.
+     *     <b>answer3:</b> (String) one of the potential answers to the question.
+     *     <b>answer4:</b> (String) one of the potential answers to the question.
+     *     <b>correct_answer:</b> (Integer) the number identifying the correct answer.
      *     <b>creator_id:</b> (Integer) the user id of the person who created the card.
      * </p>
      */
@@ -59,6 +64,7 @@ public class CardServlet extends HttpServlet {
         }
         // Call orm and retrieve card
         Card card = MockingORM.getCardFromCardNumber(cardToGet.getId());
+        // Card card = repo.read(card, card_id);
         // convert object to json
         String json = mapper.writeValueAsString(card);
         // Set response header and return to sender
@@ -73,8 +79,12 @@ public class CardServlet extends HttpServlet {
      * Requires several parameters to compose a complete card.
      * Card will be created and persisted in the database.
      *
-     * @param  question  (String) the question asked on the card.
-     * @param  answer   (String) the potential answer to the question.
+     * @param - question  (String) the question asked on the card.
+     * @param - answer1   (String) one potential answer to the question.
+     * @param - answer2   (String) one potential answer to the question.
+     * @param - answer3   (String) one potential answer to the question.
+     * @param - answer4   (String) one potential answer to the question.
+     * @param - correct_answer   (Integer) the number identifying the correct answer.
      * @return      a JSON object of the card with the card_id number.
      */
     @Override
@@ -90,13 +100,18 @@ public class CardServlet extends HttpServlet {
                 // This is only used if the user submits their information in a form (ex. website).
                 if (contentType.equals("application/x-www-form-urlencoded")) {
                     String question = req.getParameter("question");
-                    String answer = req.getParameter("answer");
+                    String answer1 = req.getParameter("answer1");
+                    String answer2 = req.getParameter("answer2");
+                    String answer3 = req.getParameter("answer3");
+                    String answer4 = req.getParameter("answer4");
+                    String correctAnswerString = req.getParameter("correct_answer");
                     String creatorIdString = req.getParameter("creator_id");
 
                     // get int form of correctAnswer + creatorId
+                    Integer correctAnswer = Parse.getNumberFromString(correctAnswerString);
                     Integer creatorId = Parse.getNumberFromString(creatorIdString);
 
-                    card = new Card(question, answer, creatorId);
+                    card = new Card(question, answer1, answer2, answer3, answer4, correctAnswer, creatorId);
                 } else {
                     throw new InvalidInputException("Unsupported content type " + contentType + " received.");
                 }
@@ -118,9 +133,13 @@ public class CardServlet extends HttpServlet {
      * Input should be in JSON format with all the parameters present.
      * Card will be updated in the database.
      *
-     * @param  card_id   (Integer) the identification number of the card to modify.
-     * @param  question  (String) the question asked on the card.
-     * @param  answer   (String) the answer to the question.
+     * @param - card_id   (Integer) the identification number of the card to modify.
+     * @param - question  (String) the question asked on the card.
+     * @param - answer1   (String) one potential answer to the question.
+     * @param - answer2   (String) one potential answer to the question.
+     * @param - answer3   (String) one potential answer to the question.
+     * @param - answer4   (String) one potential answer to the question.
+     * @param - correct_answer   (Integer) the number identifying the correct answer.
      * @return      a JSON representation of the updated card.
      */
     @Override
@@ -153,7 +172,7 @@ public class CardServlet extends HttpServlet {
      * Input should be in JSON format with the card_id.
      * Card will be deleted in the database.
      *
-     * @param  card_id   (Integer) the identification number of the card to modify.
+     * @param - card_id   (Integer) the identification number of the card to modify.
      * @return      a JSON object of the card's id number and result of the deletion.
      * <p>
      *     <b>card_id:</b> (Integer) the number identifying the card to be deleted.

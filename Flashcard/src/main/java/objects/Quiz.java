@@ -4,15 +4,13 @@ package objects;
 // answer, and this would track their progress.  Long term it could relate to a history of quizzes or something
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-// TODO: (maybe) leaving this unimplemented for now since it's still half-baked
-// Did not make a mapping in web.xml or anything for this
 public class Quiz {
-    Integer quizId;
-    String date;    // or date object
-    ArrayList<Card> cards;   // a list of the cards in the list - does ArrayList have fixed ordering?
-    // as a result cards may need an additional attribute like "solved" that isn't stored in the db, or something
-
+    Integer quizId;     // Primary Key
+    Integer creatorId;  // Person who made this
+    ArrayList<Card> cards;  // All the cards in this quiz
+    HashMap<Integer, Boolean> correct = new HashMap<>();
 
     public Integer getQuizId() {
         return quizId;
@@ -22,12 +20,12 @@ public class Quiz {
         this.quizId = quizId;
     }
 
-    public String getDate() {
-        return date;
+    public Integer getCreatorId() {
+        return creatorId;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setCreatorId(Integer creatorId) {
+        this.creatorId = creatorId;
     }
 
     public ArrayList<Card> getCards() {
@@ -36,6 +34,19 @@ public class Quiz {
 
     public void setCards(ArrayList<Card> cards) {
         this.cards = cards;
+    }
+
+    public HashMap<Integer, Boolean> getCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(HashMap<Integer, Boolean> correct) {
+        this.correct = correct;
+    }
+
+    // Whenever a question is answered incorrectly, mark it incorrect, else, mark it correct/incorrect
+    private void markCorrect(Integer cardNumber, Boolean correct) {
+        this.correct.put(cardNumber, correct);
     }
 
     // Empty constructor needed by Jackson
