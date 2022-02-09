@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ManageCardServlet extends HttpServlet {
     Log log = Log.getLogger();
@@ -48,12 +46,12 @@ public class ManageCardServlet extends HttpServlet {
         User user = new User();
         // use list-specific read method to get all the cards of the user
 
-        List<Card> userCards = new ArrayList<>();
-        repo.readAll(user, userCardsToGet.getId(), Collections.singletonList(userCards));
+        ArrayList<Object> userCards = new ArrayList<>();
+
+        repo.readAll(card, user, userCardsToGet.getId(), userCards);
 
         // Serialize all the cards
-        // convert object to json
-        String json = mapper.writeValueAsString(userCards);
+       String json = mapper.writeValueAsString(userCards);
         // Set response header and return to sender
         resp.setStatus(200);
         resp.getWriter().print(json);

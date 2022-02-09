@@ -6,6 +6,7 @@ import interfaces.CRUD;
 
 import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlankRepo implements CRUD<Object> {
@@ -205,7 +206,7 @@ public Object read(Object obj, String s){
      * @param list - Contains each row associated with id as an object to this list
      * @return
      */
-    public Object readAll(Object obj, Object ref, Integer id, List<Object> list){
+    public Object readAll(Object obj, Object ref, Integer id, ArrayList<Object> list){
         try {
             if(!obj.getClass().isAnnotationPresent(Table.class)){
                 throw new Exception("Missing @annotations.Table Annotation");
@@ -221,18 +222,22 @@ public Object read(Object obj, String s){
             ResultSet rs = ps.executeQuery();
 
             Field[] field = obj.getClass().getDeclaredFields();
-            int i = 1;
+            int j = 0;
             while(rs.next()){
+                Object obj2 = obj.getClass().newInstance();
+                int i =1;
                 for(Field f : field){
                     if(f.isAnnotationPresent(Column.class)){
                         f.setAccessible(true);
                         Object o = rs.getObject(i);
                         i++;
-                        f.set(obj, o);
+                        f.set(obj2, o);
                         f.setAccessible(false);
                     }
                 }
-                list.add(field);
+                list.add(j,obj2);
+
+                j++;
             }
 
 

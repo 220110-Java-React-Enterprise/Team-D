@@ -1,6 +1,10 @@
 package utils;
 
 import exceptions.InvalidInputException;
+import objects.Card;
+
+import java.util.ArrayList;
+
 
 public class Parse {
     
@@ -27,5 +31,17 @@ public class Parse {
         }
         // TODO: throw some custom exception here about invalid input
         return null;
+    }
+
+
+    public static ArrayList<Card> convertListToCards(ArrayList<Object> original) {
+        ArrayList<Card> cards = new ArrayList<Card>();
+        for(int i=0; i<original.size(); i++) {
+            Card card = new Card();
+            Object oldCard = original.get(i);
+            card = (Card)oldCard;
+            cards.add(card);
+        }
+        return cards;
     }
 }

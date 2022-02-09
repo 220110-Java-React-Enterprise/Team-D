@@ -37,7 +37,7 @@ public class Card {
         this.id = id;
     }
 
-
+    @JsonGetter("question")
     public String getQuestion() {
         return question;
     }
