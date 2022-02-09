@@ -39,7 +39,7 @@ public class CardServlet extends HttpServlet {
      *     <b>answer3:</b> (String) one of the potential answers to the question.
      *     <b>answer4:</b> (String) one of the potential answers to the question.
      *     <b>correct_answer:</b> (Integer) the number identifying the correct answer.
-     *     <b>creator_id:</b> (Integer) the user id of the person who created the card.
+     *     <b>user_id:</b> (Integer) the user id of the person who created the card.
      * </p>
      */
     @Override
@@ -105,7 +105,7 @@ public class CardServlet extends HttpServlet {
                     String answer3 = req.getParameter("answer3");
                     String answer4 = req.getParameter("answer4");
                     String correctAnswerString = req.getParameter("correct_answer");
-                    String creatorIdString = req.getParameter("creator_id");
+                    String creatorIdString = req.getParameter("user_id");
 
                     // get int form of correctAnswer + creatorId
                     Integer correctAnswer = Parse.getNumberFromString(correctAnswerString);

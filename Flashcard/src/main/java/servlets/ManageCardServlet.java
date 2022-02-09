@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ManageCardServlet extends HttpServlet {
@@ -43,16 +45,18 @@ public class ManageCardServlet extends HttpServlet {
 
         // Retrieve all cards from cards where creator_id = user_id
         Card card = new Card();
+        User user = new User();
         // use list-specific read method to get all the cards of the user
-        /* 
-        List<Card> userCards = (Card) repo.read(card, userCardsToGet.getId());
+
+        List<Card> userCards = new ArrayList<>();
+        repo.readAll(user, userCardsToGet.getId(), Collections.singletonList(userCards));
 
         // Serialize all the cards
         // convert object to json
         String json = mapper.writeValueAsString(userCards);
         // Set response header and return to sender
         resp.setStatus(200);
-        resp.getWriter().print(json); */
+        resp.getWriter().print(json);
     }
 
     // Only adding a get method to simplify implementation - modifying or deleting a card is already defined

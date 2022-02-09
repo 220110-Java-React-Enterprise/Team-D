@@ -24,7 +24,7 @@ public class MockingORM {
         card.setAnswer2("Object-Relational Mapping");
         card.setAnswer3("Object-Rotational Mapping");
         card.setAnswer4("Objective Relation Map");
-        card.setCreatorId(0);
+        card.setUserId(0);
 
         // Also should check if card exists / is not null
         return card;
