@@ -6,6 +6,7 @@ import interfaces.CRUD;
 
 import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.List;
 
 public class BlankRepo implements CRUD<Object> {
     private final Connection con;
@@ -196,6 +197,52 @@ public Object read(Object obj, String s){
         return null;
     }
 
+    /**
+     * Queries all data from all tables belonging to a single id through foreign key relationships
+     * @param obj - determines where the primary id used to query is
+     * @param id - the primary id
+     * @param list - used to return all items in the form of a list of Objects
+     * @return
+     */
+    public Object readAll(Object obj, Integer id, List<Object> list){
+        try {
+            if(!obj.getClass().isAnnotationPresent(Table.class)){
+                throw new Exception("Missing @annotations.Table Annotation");
+            }
+            //reads object. make sure the primary key is named tableName_id where tableName is the name of the table
+            String tableName = obj.getClass().getAnnotation(Table.class).tableName();
+            String sql = "SELECT * FROM * WHERE " + tableName + "_id = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setObject(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            Field[] field = obj.getClass().getDeclaredFields();
+            int i = 1;
+            while(rs.next()){
+                for(Field f : field){
+                    if(f.isAnnotationPresent(Column.class)){
+                        f.setAccessible(true);
+                        Object o = rs.getObject(i);
+                        i++;
+                        f.set(obj, o);
+                        f.setAccessible(false);
+                    }
+                }
+                list.add(field);
+            }
+
+
+            return obj;
+
+            //change this later
+        } catch(Exception e){
+            e.printStackTrace();
+
+        }
+        return null;
+    }
 
     /**
      * This method updates the SQL database for a given object. Change the object through its getters and setters then
