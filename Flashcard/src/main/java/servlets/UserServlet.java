@@ -57,6 +57,7 @@ public class UserServlet extends HttpServlet {
             log.write(e);
             throw new InvalidInputException("Invalid input received");
         }
+
         // Call orm and retrieve card
         User user = new User();
         user = (User) repo.read(user, userToGet.getId());

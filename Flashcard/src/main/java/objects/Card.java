@@ -3,9 +3,11 @@ package objects;
 import annotations.Column;
 import annotations.Table;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Table(tableName="Card")
+@JsonPropertyOrder({"card_id", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "creator_id"})
 public class Card {
     @Column(columnName="card_id", primaryKey=true)
     Integer id;

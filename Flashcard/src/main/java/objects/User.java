@@ -5,12 +5,14 @@ package objects;
 import annotations.Column;
 import annotations.Table;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * The User class represents a user of the app.
  */
 @Table(tableName="User")
+@JsonPropertyOrder({"user_id", "first_name", "last_name", "email"})
 public class User {
     @Column(columnName="user_id", primaryKey=true)
     Integer id;
