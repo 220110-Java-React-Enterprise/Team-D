@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.InvalidInputException;
 import objects.Card;
 import utils.Log;
-import utils.MockingORM;
 import utils.Parse;
 import services.BlankRepo;
 
@@ -64,10 +63,7 @@ public class CardServlet extends HttpServlet {
             throw new InvalidInputException("Invalid input received");
         }
         // Call orm and retrieve card
-        //Card card = MockingORM.getCardFromCardNumber(cardToGet.getId());
         Card card = new Card();
-
-
         card = (Card) repo.read(card, cardToGet.getId());
         // convert object to json
         String json = mapper.writeValueAsString(card);
@@ -125,7 +121,7 @@ public class CardServlet extends HttpServlet {
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
-        MockingORM.submitNewCard(card);
+        card = (Card) repo.create(card);
         String json = mapper.writeValueAsString(card);
         resp.setStatus(203);
         resp.getWriter().write(json);
@@ -164,7 +160,7 @@ public class CardServlet extends HttpServlet {
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
-        MockingORM.submitNewCard(card);
+        card = (Card) repo.update(card);
         String json = mapper.writeValueAsString(card);
         resp.setStatus(203);
         resp.getWriter().write(json);
@@ -194,10 +190,21 @@ public class CardServlet extends HttpServlet {
             log.write(e);
             throw new InvalidInputException("Bad delete request");
         }
-        Boolean result = MockingORM.deleteCard(card.getId());
-        resp.setStatus(200);
-        String json = "{\"card_id\": " + card.getId() + ", \"deleted\": " + result + "}";
-        resp.getWriter().write(json);
+
+        try {
+            // Putting back into a card object so ORM understands
+            Card cardToDelete = new Card();
+            repo.delete(cardToDelete, card.getId());
+            resp.setStatus(200);
+            String json = "{\"card_id\": " + card.getId() + ", \"deleted\": " + "true" + "}";
+            resp.getWriter().write(json);
+        }
+        catch (Exception e) {
+            log.write(e);
+            resp.setStatus(500);
+            String json = "{\"card_id\": " + card.getId() + ", \"deleted\": " + "false" + "}";
+            resp.getWriter().write(json);
+        }
     }
 
 }

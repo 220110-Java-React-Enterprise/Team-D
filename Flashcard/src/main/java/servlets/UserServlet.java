@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.InvalidInputException;
-import objects.Card;
 import objects.User;
+import services.BlankRepo;
 import utils.Log;
-import utils.MockingORM;
 import utils.Parse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +20,7 @@ import java.io.IOException;
  */
 public class UserServlet extends HttpServlet {
     Log log = Log.getLogger();
+    BlankRepo repo = new BlankRepo();
 
     /**
      * Returns a User object in JSON format for the specified ID.
@@ -28,7 +28,7 @@ public class UserServlet extends HttpServlet {
      * The JSON format requires the user_id as an integer.
      * The key must be "user_id" with an integer value.
      *
-     * @param  user_id  an integer uniquely identifying the user.
+     * @param - user_id  an integer uniquely identifying the user.
      * @return      a JSON representation of the requested user.
      *
      * <p>
@@ -58,9 +58,11 @@ public class UserServlet extends HttpServlet {
             throw new InvalidInputException("Invalid input received");
         }
         // Call orm and retrieve card
-        Card card = MockingORM.getCardFromCardNumber(userToGet.getId());
+        User user = new User();
+        user = (User) repo.read(user, userToGet.getId());
+
         // convert object to json
-        String json = mapper.writeValueAsString(card);
+        String json = mapper.writeValueAsString(user);
         // Set response header and return to sender
         resp.setStatus(200);
         resp.getWriter().print(json);
@@ -73,9 +75,9 @@ public class UserServlet extends HttpServlet {
      * The JSON format requires the first_name, last_name, and email.
      * The keys must be in key-value pairs.
      *
-     * @param  first_name  a String of the user's first name.
-     * @param  last_name   a String of the user's last name.
-     * @param  email       a String of the user's email.
+     * @param - first_name  a String of the user's first name.
+     * @param - last_name   a String of the user's last name.
+     * @param - email       a String of the user's email.
      * @return      a JSON representation of the requested user.
      *
      * <p>
@@ -112,7 +114,8 @@ public class UserServlet extends HttpServlet {
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
-        MockingORM.addUser(user);
+        user = (User) repo.create(user);
+
         String json = mapper.writeValueAsString(user);
         resp.setStatus(203);
         resp.getWriter().write(json);
@@ -120,13 +123,13 @@ public class UserServlet extends HttpServlet {
 
 
     /**
-     * Returns a User object in JSON format for the specified ID.
+     * Returns an updated User object in JSON format for the specified ID.
      * Input must be in JSON format with all the required fields for a User object.
      *
-     * @param  user_id  an integer uniquely identifying the user.
-     * @param  first_name   a string of the user's first name.
-     * @param  last_name    a string of the user's last name.
-     * @param  email    the user's email address.
+     * @param - user_id  an integer uniquely identifying the user.
+     * @param - first_name   a string of the user's first name.
+     * @param - last_name    a string of the user's last name.
+     * @param - email    the user's email address.
      * @return      a JSON representation of the requested user.
      *
      */
@@ -157,7 +160,7 @@ public class UserServlet extends HttpServlet {
             throw new InvalidInputException("Some invalid input was received.");
         }
         // return updated card to user
-        MockingORM.addUser(user);
+        user = (User) repo.update(user);
         String json = mapper.writeValueAsString(user);
         resp.setStatus(203);
         resp.getWriter().write(json);
@@ -169,7 +172,7 @@ public class UserServlet extends HttpServlet {
      * Input should be in JSON format with the user_id.
      * User will be deleted in the database.
      *
-     * @param  user_id   (Integer) the identification number of the user to remove.
+     * @param - user_id   (Integer) the identification number of the user to remove.
      * @return      a JSON object of the user's id number, name, and result of the deletion.
      */
     @Override
@@ -184,9 +187,11 @@ public class UserServlet extends HttpServlet {
             throw new InvalidInputException("Bad delete request");
         }
 
-        Boolean result = MockingORM.deleteUser(user.getId());
+        // Creating user object so ORM can understand request
+        User userToDelete = new User();
+        repo.delete(userToDelete, user.getId());
         resp.setStatus(200);
-        String json = "{\"user_id\": " + user.getId() + ", \"name\": " + user.getFirstName() + user.getLastName() + ", \"deleted\": " + result + "}";
+        String json = "{\"user_id\": " + user.getId() + ", \"name\": " + user.getFirstName() + " " + user.getLastName() + ", \"deleted\": " + "true" + "}";
         resp.getWriter().write(json);
     }
 }
