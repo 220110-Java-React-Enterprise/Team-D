@@ -2,18 +2,23 @@ package objects;
 
 // holds the user data
 // The annotations help translate between the different names for user_id, id, userId etc.
+import annotations.Column;
+import annotations.Table;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * The User class represents a user of the app.
  */
-//@Table(tableName="User")
+@Table(tableName="User")
 public class User {
-    //@Column(columnName="user_id", primaryKey=true)
+    @Column(columnName="user_id", primaryKey=true)
     Integer id;
+    @Column(columnName="first_name", primaryKey=false)
     String firstName;
+    @Column(columnName="last_name", primaryKey=false)
     String lastName;
+    @Column(columnName="email", primaryKey=false)
     String email;
 
     @JsonGetter("user_id")

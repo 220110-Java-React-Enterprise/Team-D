@@ -9,12 +9,19 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 public class Card {
     @Column(columnName="card_id", primaryKey=true)
     Integer id;
+    @Column(columnName="question", primaryKey=false)
     String question;
+    @Column(columnName="answer1", primaryKey=false)
     String answer1;
+    @Column(columnName="answer2", primaryKey=false)
     String answer2;
+    @Column(columnName="answer3", primaryKey=false)
     String answer3;
+    @Column(columnName="answer4", primaryKey=false)
     String answer4;
+    @Column(columnName="correct_answer", primaryKey=false)
     Integer correctAnswer;
+    @Column(columnName="creator_id", primaryKey=false)
     Integer creatorId;
 
     // Getters and setters
@@ -28,42 +35,52 @@ public class Card {
         this.id = id;
     }
 
+
     public String getQuestion() {
         return question;
     }
 
+    @JsonSetter("question")
     public void setQuestion(String question) {
         this.question = question;
     }
 
+    @JsonGetter("answer1")
     public String getAnswer1() {
         return answer1;
     }
 
+    @JsonSetter("answer1")
     public void setAnswer1(String answer1) {
         this.answer1 = answer1;
     }
 
+    @JsonGetter("answer2")
     public String getAnswer2() {
         return answer2;
     }
 
+    @JsonSetter("answer2")
     public void setAnswer2(String answer2) {
         this.answer2 = answer2;
     }
 
+    @JsonGetter("answer3")
     public String getAnswer3() {
         return answer3;
     }
 
+    @JsonSetter("answer3")
     public void setAnswer3(String answer3) {
         this.answer3 = answer3;
     }
 
+    @JsonGetter("answer4")
     public String getAnswer4() {
         return answer4;
     }
 
+    @JsonSetter("answer4")
     public void setAnswer4(String answer4) {
         this.answer4 = answer4;
     }
