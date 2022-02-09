@@ -198,20 +198,22 @@ public Object read(Object obj, String s){
     }
 
     /**
-     * Queries all data from all tables belonging to a single id through foreign key relationships
-     * @param obj - determines where the primary id used to query is
-     * @param id - the primary id
-     * @param list - used to return all items in the form of a list of Objects
+     * Retrieves data from a table at a specific reference id as a list
+     * @param obj - Denotes what table to query from
+     * @param ref - Used to find the foreign key id column to retrieve data from
+     * @param id - Used to determine what row(s) to retrieve
+     * @param list - Contains each row associated with id as an object to this list
      * @return
      */
-    public Object readAll(Object obj, Integer id, List<Object> list){
+    public Object readAll(Object obj, Object ref, Integer id, List<Object> list){
         try {
             if(!obj.getClass().isAnnotationPresent(Table.class)){
                 throw new Exception("Missing @annotations.Table Annotation");
             }
             //reads object. make sure the primary key is named tableName_id where tableName is the name of the table
             String tableName = obj.getClass().getAnnotation(Table.class).tableName();
-            String sql = "SELECT * FROM * WHERE " + tableName + "_id = ?";
+            String table2Name = ref.getClass().getAnnotation(Table.class).tableName();
+            String sql = "SELECT * FROM "+ tableName + " WHERE " + table2Name + "_id = ?";
 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setObject(1, id);
