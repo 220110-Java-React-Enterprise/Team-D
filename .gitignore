@@ -6,6 +6,7 @@
 **/**/target
 ./ORM/target
 *.properties
+Flashcard/.vscode/
 
 # Log file
 *.log
