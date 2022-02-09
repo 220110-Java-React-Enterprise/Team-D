@@ -39,6 +39,7 @@ public class ConnectionManager {
         try {
 
             //Properties is an object that holds key/value pairs read from a file
+
             Properties props = new Properties();
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             InputStream input = loader.getResourceAsStream("jdbc.properties");
@@ -52,8 +53,11 @@ public class ConnectionManager {
                     props.getProperty("username") + "&password=" +
                     props.getProperty("password");
 
+
+            Class.forName("org.mariadb.jdbc.Driver");
             connection = DriverManager.getConnection(connectionString);
-        } catch (IOException | SQLException e) {
+
+        } catch (IOException | SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return connection;

@@ -3,7 +3,6 @@ package services;
 import annotations.Column;
 import annotations.Table;
 import interfaces.CRUD;
-import services.ConnectionManager;
 
 import java.lang.reflect.Field;
 import java.sql.*;
