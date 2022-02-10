@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang=en>
+	<head>
+		<title>Flashcards</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+
+	<body>
+		<header>
+			<a href="newuser.html"><button>New user</button></a>
+			<a href="index.html"><button>New card</button></a>
+		</header>
+
+		<main>
+
+			<div class="card">
+				<form action="http://localhost:8080/Flashcard/user" method="POST">
+					<div class="user-info-box">
+						<input type="text" name="first_name" id="first_name" placeholder="First name" class="user-info" maxlength=30 required /><br />
+						<input type="text" name="last_name" id="last_name" placeholder="Last name" class="user-info" maxlength=30 required /><br />
+						<input type="text" name="email" id="email" placeholder="E-mail address" class="user-info" maxlength=30 required />
+					</div>
+
+					<input type="submit" value="Send" class="footer"/>
+				</form>
+			</div>
+		</main>
+		<!-- <script type="text/javascript" src="cards.js"></script>  -->
+	</body>
+
+</html>

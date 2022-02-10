@@ -59,6 +59,7 @@ public class CardServlet extends HttpServlet {
             }
         }
         catch (Exception e) {
+            System.out.println("Received " + contentType + req.getPathInfo());
             log.write(e);
             throw new InvalidInputException("Invalid input received");
         }
