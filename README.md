@@ -44,12 +44,17 @@ git clone https://github.com/220110-Java-React-Enterprise/Team-D.git
 
 Must create the card and user databases prior to using the application:
 - The database credentials must be specified in ./src/main/resources/jdbc.properties
+
+
 Required fields:
 hostname (Address to access the database)
 port (Port number for the database)
 dbname=pone (If this is changed, must modify the sample ddl statements below)
 username (Username with read/write/access permissions for the database)
 password (Password for the above account)
+
+![image](https://user-images.githubusercontent.com/97481827/155006508-439107c1-95fc-46e0-9337-a3e86ca9bcd9.png)
+
 
 SQL Statements needed to setup database: 
 CREATE TABLE pone.Card(
@@ -76,7 +81,11 @@ First build the custom ORM to compile a jar and place it in your local cache.  T
 Then open the Flashcard directory as your project directory - Go to "Edit Configuration", Add New Configuration > Smart Tomcat
 Specify the Tomcat Server (Apache Tomcat/8.5.73), the Context Path /Flashcard, and server port (8080 by default).  Save this configuration by pressing Ok and use this to run the application.  If Smart Tomcat is not used, some files may need to be copied to WEB-INF and configuration changes will be needed to be done manually.
 
+![image](https://user-images.githubusercontent.com/97481827/155006552-73645fe2-2610-46c6-9da5-eece868f12e6.png)
+
+
 If it is running successfully it should show the address where you can access the api in the IntellJ console.  (http://localhost:8080/Flashcard)
+![image](https://user-images.githubusercontent.com/97481827/155006612-ffb6b14a-709b-42f7-bbd2-557b85b553f5.png)
 
 
 
@@ -84,7 +93,10 @@ Usage
 
 You can interact with the API by sending requests through Postman.
 
-Alternatively, you can open the webpages in ./Flashcard/client to submit post requests to the server.  index.html will let you create new notecards, while newuser.html will allow you to add new users.
+Alternatively, you can open index.html in ./Flashcard/client to submit post requests to the server.
+![image](https://user-images.githubusercontent.com/97481827/155006831-498f8966-7eae-452d-8bd5-4add0b6ce5ef.png)
+![image](https://user-images.githubusercontent.com/97481827/155006907-c6fbed95-3638-4115-a408-fc2ae876bec3.png)
+
 
 
 Contributors
